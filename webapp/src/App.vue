@@ -176,6 +176,10 @@
           <div v-if="activeView === 'memory'" class="bb-view">
             <MemoryPanel />
           </div>
+
+          <div v-if="activeView === 'tasks'" class="bb-view">
+            <TasksPanel @show-transcript="openView('transcript')" />
+          </div>
         </q-page>
       </q-page-container>
     </template>
@@ -202,6 +206,7 @@ import UsagePanel from "./components/UsagePanel.vue";
 import ChangesPanel from "./components/ChangesPanel.vue";
 import ChangelogPanel from "./components/ChangelogPanel.vue";
 import MemoryPanel from "./components/MemoryPanel.vue";
+import TasksPanel from "./components/TasksPanel.vue";
 import { PRIMARY_VIEWS, MENU_VIEWS } from "./composables/menuViews.js";
 
 const $q = useQuasar();

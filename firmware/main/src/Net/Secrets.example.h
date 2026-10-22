@@ -1,7 +1,7 @@
 // Copy this file to Secrets.h (same folder) and fill it in.
 // Secrets.h is gitignored - it must never be committed.
-#ifndef BUTTERBOT_FIRMWARE_SECRETS_H
-#define BUTTERBOT_FIRMWARE_SECRETS_H
+#ifndef DESKMATES_FIRMWARE_SECRETS_H
+#define DESKMATES_FIRMWARE_SECRETS_H
 
 #include "Net/NetTypes.h"
 
@@ -13,7 +13,7 @@ inline constexpr KnownNetwork Networks[] = {
 	{ "PhoneHotspotSSID",  "hotspot-password" },
 };
 
-// Deskmates server WebSocket endpoint.
+// Server WebSocket endpoint.
 inline constexpr const char* ServerUri = "wss://your-server.example.com/";
 
 // Must exactly match BOT_AUTH_TOKEN in the server's .env
@@ -22,4 +22,4 @@ inline constexpr const char* BotAuthToken = "paste-BOT_AUTH_TOKEN-here";
 
 }
 
-#endif //BUTTERBOT_FIRMWARE_SECRETS_H
+#endif //DESKMATES_FIRMWARE_SECRETS_H

@@ -1,0 +1,11 @@
+menu "ButterBot"
+
+	config BB_STOCK_VOICE
+		bool "Stock on-device voice (flite)"
+		default n
+		help
+			Speak stock phrases with the built-in flite synthesizer (about 4.5 MB of the app).
+			Off: the server speaks them in the companion personality's voice, and they are
+			silent while it can't be reached. Turn on and app-flash to bring the stock voice back.
+
+endmenu

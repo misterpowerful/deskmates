@@ -17,6 +17,15 @@ export function makeFakeClaudeBin() {
     `#!/usr/bin/env node
 const sleepMs = Number(process.env.FAKE_CLAUDE_SLEEP_MS) || 0;
 setTimeout(() => {
+  // Optional: record exactly how the worker was invoked (argv, cwd, and what
+  // sits in that cwd) so a test can assert on tool lists and file placement.
+  if (process.env.FAKE_CLAUDE_RECORD) {
+    const nodeFs = require("node:fs");
+    nodeFs.writeFileSync(
+      process.env.FAKE_CLAUDE_RECORD,
+      JSON.stringify({ argv: process.argv.slice(2), cwd: process.cwd(), files: nodeFs.readdirSync(process.cwd()) }),
+    );
+  }
   process.stdout.write(process.env.FAKE_CLAUDE_RESPONSE ?? "");
   process.exit(Number(process.env.FAKE_CLAUDE_EXIT_CODE) || 0);
 }, sleepMs);

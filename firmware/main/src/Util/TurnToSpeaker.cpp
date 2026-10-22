@@ -10,6 +10,7 @@
 #include <Statics/ApplicationStatics.h>
 #include "Audio/AudioFrontend.h"
 #include "Services/BaseBoard.h"
+#include "Services/MotionService.h"
 
 static const char* TAG = "TurnToSpeaker";
 
@@ -125,8 +126,13 @@ void service(){
 	if(bb == nullptr){
 		return;
 	}
-	// No upright/ground check: MotionService is disabled outside IdleState, so its reading went stale
-	// mid-conversation and blocked every turn after a while (2026-10-10). Desk turning is fine.
+	// No upright check: MotionService is disabled outside IdleState, so its pose went stale mid-conversation
+	// and blocked every turn after a while (2026-10-10). The bottom sensor is live, though: no floor, no turn
+	// (and losing the floor mid-turn stops the motors in MotionService).
+	if(MotionService* motion = ApplicationStatics::getApplication()->getService<MotionService>(); motion && motion->floorLost()){
+		ESP_LOGW(TAG, "floor not seen: no turn");
+		return;
+	}
 	if(stopTimer == nullptr){
 		const esp_timer_create_args_t args = { .callback = &stopCb, .name = "turn-stop" };
 		if(esp_timer_create(&args, &stopTimer) != ESP_OK){

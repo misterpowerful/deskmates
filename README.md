@@ -37,6 +37,8 @@ and ElevenLabs voices the reply in the character's own voice.
 - **Cost and latency visibility.** Every turn is logged with its model, token
   counts, tool calls, per-stage timings and cost. The web app charts daily
   spend by model and shows plan usage.
+- **Task queue in the web app.** A Tasks view lists pending and finished self-build
+  tasks, and a task can include a photo for the bot to look at.
 - **A self-build pipeline.** A nightly job proposes improvements as task files,
   you approve them, and Claude implements them in an isolated git worktree
   behind a test gate. See [Engineering notes](#engineering-notes).

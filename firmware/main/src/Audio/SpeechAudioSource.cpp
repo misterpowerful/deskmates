@@ -1,10 +1,19 @@
 #include "SpeechAudioSource.h"
+#include "Net/RobotControl.h"
 #include <Util/ServiceLocator.h>
 
 SpeechAudioSource::SpeechAudioSource(SpeechGen::InputType type, std::string source) : type(type), source(std::move(source)){
+	// A stock routine run for Gatsby: he says it in his own voice, so hand him the text and stay silent.
+	if(RobotControl::capturing()){
+		RobotControl::capture(this->source);
+		lastSample = true;
+	}
 }
 
 void SpeechAudioSource::open(){
+	if(lastSample){
+		return;
+	}
 	if(!ServiceLocator::SpeechGenInstance){
 		return;
 	}
@@ -23,7 +32,7 @@ void SpeechAudioSource::open(){
 }
 
 void SpeechAudioSource::close(){
-	if(!ServiceLocator::SpeechGenInstance){
+	if(lastSample || !ServiceLocator::SpeechGenInstance){
 		return;
 	}
 	ServiceLocator::SpeechGenInstance->cancel();

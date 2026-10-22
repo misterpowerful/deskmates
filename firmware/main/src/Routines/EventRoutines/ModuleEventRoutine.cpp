@@ -7,6 +7,7 @@
 #include "Services/Com.h"
 #include "Services/LED/LED.h"
 #include "Enums.h"
+#include "Net/RobotControl.h"
 
 DEFINE_LOG(ModuleEventRoutine)
 
@@ -64,6 +65,11 @@ ModuleEventRoutine::ModuleEventRoutine(BBStateMachine* sm, EventBag::EventData d
 	}
 
 	com->sendData(BB::State::Idle, BB::Action::Idle::ModuleChange, ModuleData{ .id = static_cast<uint8_t>(phraseID), .type = static_cast<ModuleType>(moduleData->type), .inserted = data.type == EventBag::EventType::ModuleInsert });
+
+	// Companion mode: Gatsby acknowledges the board in his own voice, so the stock line stays quiet.
+	if(RobotControl::reportModule(moduleData->type, data.type == EventBag::EventType::ModuleInsert)){
+		phraseID = -1;
+	}
 
 	if(data.type == EventBag::EventType::ModuleRemove && moduleData->type == Modules::Type::RM_Motion){
 		LED<MonoLED, RGBLED>* ledService = app->getService<LED<MonoLED, RGBLED>>();

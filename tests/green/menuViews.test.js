@@ -6,8 +6,9 @@ test("primary views are exactly Visualizer and Transcript", () => {
   assert.deepEqual(PRIMARY_VIEWS.map((v) => v.name), ["visualizer", "transcript"]);
 });
 
-test("log, turns, costs, usage, changes, changelog and memory live in the menu", () => {
+test("tasks, log, turns, costs, usage, changes, changelog and memory live in the menu", () => {
   assert.deepEqual(MENU_VIEWS.map((v) => v.name), [
+    "tasks",
     "log",
     "turns",
     "costs",
@@ -16,6 +17,7 @@ test("log, turns, costs, usage, changes, changelog and memory live in the menu",
     "changelog",
     "memory",
   ]);
+  assert.ok(isMenuView("tasks"));
   assert.ok(isMenuView("log"));
   assert.ok(isMenuView("memory"));
   assert.ok(isPrimaryView("transcript"));

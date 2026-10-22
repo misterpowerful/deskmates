@@ -575,7 +575,7 @@ async function main() {
   // target, since that's the one repo this whole test suite already
   // assumes read/write access to is safe to touch. Run in plain friendly
   // mode, same as steps 11-15 — no trigger phrase needed.
-  const GITHUB_TEST_OWNER = "misterpowerful";
+  const GITHUB_TEST_OWNER = "your-github-user";
   const GITHUB_TEST_REPO = "deskmates";
   const GITHUB_TEST_PATH = "logs/tool-test-marker.txt";
   const verifyMarker = `VERIFY-${Math.random().toString(36).slice(2, 10)}`;

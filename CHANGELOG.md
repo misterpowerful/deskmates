@@ -8,6 +8,22 @@ it). Not every commit gets an entry here — just the ones worth a plain-
 language note. For the full commit-by-commit history, use the "Changes"
 panel or `git log`.
 
+## 2026-10-21 — Tasks view and photo tasks
+
+- New **Tasks** item in the ☰ menu: every delegated task in one place —
+  needs-your-sign-off, in progress, ready, failed, and earlier — with the
+  photo (if any), the spoken-length summary, and the full result when you
+  open one. "Read to me" has Gatsby speak it through the normal
+  list/get-task flow.
+- You can now send Gatsby a **photo** from the Tasks view (camera or
+  library, optional "what should I look for?"). It runs as a background
+  task like any other: chime/toast when done, ask for it later by voice or
+  open it on screen. Photo workers get the Read tool only — no Gmail, Drive
+  or Calendar — so text inside a picture can't steer them.
+- Opening a task on screen marks it *read*, separately from *heard* aloud;
+  either one makes it eligible for the weekly retention sweep (which now
+  also deletes the photo with it).
+
 ## 2026-10-11 — Async task delegation (friendly mode)
 
 - A substantial friendly-mode request ("summarize my unread emails", "add

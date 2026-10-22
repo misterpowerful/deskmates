@@ -3,9 +3,17 @@
 
 #include <memory>
 #include <span>
+#include <string>
+#include <mutex>
+#include <sdkconfig.h>
+#include "freertos/FreeRTOS.h"
+#if CONFIG_BB_STOCK_VOICE
 #include "flite.h"
 #include "freertos/ringbuf.h"
 #include "Thread/Threaded.h"
+#else
+#include "Util/PSRAMAllocator.h"
+#endif
 
 /**
  * Flite thread, koji vrti TTS
@@ -60,6 +68,15 @@ public:
 	};
 
 private:
+#if !CONFIG_BB_STOCK_VOICE
+	// Stock voice off (SpeechGenServer.cpp): the server speaks the text in the companion voice.
+	static constexpr uint32_t ServerSpeechTimeoutMs = 8000;
+	std::mutex mtx;
+	bool active = false;
+	uint64_t deadlineMs = 0;
+	PSRAMByteBuffer pcm;
+	size_t pos = 0;
+#else
 	static constexpr size_t BufferSize = 4 * 1024;
 	static constexpr size_t FliteMinBufSize = 512;
 
@@ -89,6 +106,7 @@ private:
 	[[maybe_unused]] static std::string flitePhoneToCMU(const cst_item* seg);
 	static std::string CMUToFlitePhone(const std::string& cmu);
 	static std::string multinetToCMU(const std::string& input);
+#endif
 };
 
 

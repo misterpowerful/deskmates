@@ -93,6 +93,14 @@ protected:
 		esp_log_level_set("WakeWord", ESP_LOG_INFO);
 		esp_log_level_set("GatsbyLines", ESP_LOG_INFO);
 		esp_log_level_set("TurnToSpeaker", ESP_LOG_INFO);
+		// Swappable boards: detection, plug-in events and the announcing routine (LED boards not acknowledged).
+		esp_log_level_set("ModuleService", ESP_LOG_INFO);
+		esp_log_level_set("EventBag", ESP_LOG_INFO);
+		esp_log_level_set("ModuleEventRoutine", ESP_LOG_INFO);
+		esp_log_level_set("LEDModuleControl", ESP_LOG_INFO);
+		// ESP-SR warns "Ringbuffer of AFE(FEED) is full" every frame while recognition runs behind real time.
+		// Thousands of them backed the 115200 serial up ~15 min and slowed the feed task that prints them.
+		esp_log_level_set("AFE", ESP_LOG_ERROR);
 
 		// Stack overflow otherwise - increase Threaded/AsyncEntity stack size if logging is needed
 		esp_log_level_set("Android", ESP_LOG_NONE);
@@ -315,16 +323,14 @@ protected:
 
 		ISRButtonInput* input = registerService<ISRButtonInput>((int)Button::Power, InputPin{gpioInput, PIN_BTN}, /*internalStack=*/false);
 		input->OnButtonEvent.bind(this, &Butterbot::onButtonEvent);
+		// Created once here: allocating it on each press aborted when a model load had left internal RAM
+		// empty (std::mutex init failed inside the button handler).
+		forceOffTimer = newObject<Timer>(this, ForcePowerOffTime, [](void*){ ShutdownService::PowerOff(); }, nullptr, "ForceOff");
 		input->OnButtonEvent.bind(modules, [this](int button, ISRButtonInput::Action action){
 			if(action == ISRButtonInput::Action::Press){
-				forceOffTimer = newObject<Timer>(this, ForcePowerOffTime, [](void*){ ShutdownService::PowerOff(); }, nullptr, "ForceOff");
-				forceOffTimer->start();
+				forceOffTimer->reset();
 			}else if(action == ISRButtonInput::Action::Release){
-				if(forceOffTimer){
-					forceOffTimer->stop();
-					delete forceOffTimer.get();
-					forceOffTimer = nullptr;
-				}
+				forceOffTimer->stop();
 			}
 		});
 
@@ -370,8 +376,8 @@ private:
 	inline static bool muted = false;
 
 	// Speaker gain (linear, 1.0 = full). Stock booted at 0.8 but unmuted back to 1.0; both now use this.
-	// 0.25, then 15% lower at the owner's request (2026-10-17).
-	static constexpr float Volume = 0.2125f;
+	// 0.25, then 15% lower at the owner's request (2026-10-17), then 25% lower (2026-10-20).
+	static constexpr float Volume = 0.16f;
 
 	static constexpr const char* UnmuteSounds[] = {
 		"/spiffs/listen/lasers1/phaseJump1.aac",

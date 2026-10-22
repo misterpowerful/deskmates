@@ -1,7 +1,7 @@
 # Deskmates mobile webapp — stack & current state
 
 Snapshot as of 2026-09-11. Covers the new mobile web client only — see
-`docs/SETUP.md` for the WebSocket backend (personalities, memory, canned
+`README.md` for the WebSocket backend (personalities, memory, canned
 responses, ops).
 
 ## Stack
@@ -103,6 +103,7 @@ else falls through to the SPA's `index.html`. `/console` is untouched.
 | Transcript store + Copy | `composables/useTranscript.js`, `components/TranscriptPanel.vue` |
 | Protocol log store + Copy | `composables/useProtocolLog.js`, `components/LogPanel.vue` |
 | Visualizer gallery (swipeable) | `components/VisualizerCarousel.vue`, `composables/useVisualizerChoice.js` |
+| Tasks view (delegated-task queue, photo upload, read-aloud) | `components/TasksPanel.vue`, `composables/taskView.js`; server side `src/taskApi.js` (`/api/tasks`, `/api/tasks/:id`, `/api/tasks/:id/image`, `/api/tasks/:id/viewed`, `POST /api/tasks/vision`) |
 | Individual visualizations | `components/VisualizerPulse.vue`, `VisualizerBars.vue`, `VisualizerOrbit.vue`, registered in `components/visualizerRegistry.js` |
 | Per-mode color wheel settings (drawer) | `components/ColorSettingsDrawer.vue`, `components/ColorWheel.vue`, `composables/colorSettings.js` |
 
@@ -253,3 +254,13 @@ Log view showed no per-turn usage at all.
 subscription turns, TTS character count, stage timings). Both logs print a
 `turn stats:` line per turn. Nulls mean "not available", never filler.
 ElevenLabs has no dollar price table, so only character count is shown.
+
+## Tasks view — deployment note
+
+Photo upload is `POST /api/tasks/vision` with the raw image as the body. The
+webapp downscales to a 1568px long edge JPEG first, so uploads are normally a
+few hundred KB, but nginx's default `client_max_body_size` is 1 MB — raise it
+for the proxied location (e.g. `client_max_body_size 6m;`) or a large photo
+gets a 413 before it reaches the server. The server itself caps images at
+5 MB and accepts JPEG/PNG/WebP only (checked by magic bytes, not the
+content-type header).

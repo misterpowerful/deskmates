@@ -5,6 +5,7 @@ export const PRIMARY_VIEWS = [
 ];
 
 export const MENU_VIEWS = [
+  { name: "tasks", label: "Tasks", icon: "task_alt" },
   { name: "log", label: "Log", icon: "list_alt" },
   { name: "turns", label: "Turns", icon: "forum" },
   { name: "costs", label: "Costs", icon: "paid" },

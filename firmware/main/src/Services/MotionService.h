@@ -27,6 +27,9 @@ public:
 
 	bool isUprightOnGround();
 
+	/** The bottom sensor doesn't see the floor (lifted, or over a table edge). Live in every state. */
+	bool floorLost() const { return proximityLifted; }
+
 private:
 	std::vector<SC7A20::Sample> fifo;
 	static constexpr size_t MaxFIFODepth = 64;

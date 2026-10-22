@@ -301,7 +301,7 @@ void NetService::watchTimerCb(void* arg){
 	if(!lock.owns_lock()){
 		return; // a send is in progress; check again next tick
 	}
-	ESP_LOGW(TAG, "Brain server unreachable for %lu ms with WiFi up, restarting websocket", (unsigned long) NetConfig::WsWatchdogRestartMs);
+	ESP_LOGW(TAG, "Server unreachable for %lu ms with WiFi up, restarting websocket", (unsigned long) NetConfig::WsWatchdogRestartMs);
 	self->stopWebSocket();
 	self->startWebSocket();
 	self->serverDownSinceUs = now;
@@ -389,7 +389,7 @@ void NetService::onWsEvent(int32_t id, void* data){
 		case WEBSOCKET_EVENT_CLOSED:
 		case WEBSOCKET_EVENT_ERROR: {
 			if(serverUp.exchange(false)){
-				ESP_LOGW(TAG, "Brain server connection lost (event %ld)", (long) id);
+				ESP_LOGW(TAG, "Server connection lost (event %ld)", (long) id);
 			}
 			// Drop any half-received frame: after a mid-frame transport error the client can hand up
 			// leftover bytes as a "new" frame, which must not be taken for the reply.
@@ -480,6 +480,8 @@ void NetService::onWsEvent(int32_t id, void* data){
 						failTurnLocked("response audio too large");
 					}else if(expectBin == BinDest::Filler){
 						fillerReqId.clear();
+					}else if(expectBin == BinDest::Speak){
+						speakReqId.clear();
 					}
 					expectBin = BinDest::None;
 				}
@@ -548,9 +550,18 @@ void NetService::onTextMessage(const std::string& json){
 	}
 
 	if(type == "robot_command"){
-		robotCmdId = id;
-		robotCmdAction = jsonString(root, "action");
-		ESP_LOGI(TAG, "Robot command %s: %s", id.c_str(), robotCmdAction.c_str());
+		const std::string action = jsonString(root, "action");
+		const std::string arg = jsonString(root, "arg");
+		ESP_LOGI(TAG, "Robot command %s: %s %s", id.c_str(), action.c_str(), arg.c_str());
+		if(action == "led" || action == "status"){
+			if(quickCmds.size() < 4){
+				quickCmds.push_back({ id, action, arg });
+			}
+		}else{
+			robotCmdId = id;
+			robotCmdAction = action;
+			robotCmdArg = arg;
+		}
 	}else if(type == "announce"){
 		// Gatsby reacting to a robot_result: played by IdleState like the connect greeting.
 		ESP_LOGI(TAG, "Announcement: \"%s\"", jsonString(root, "text").c_str());
@@ -578,6 +589,13 @@ void NetService::onTextMessage(const std::string& json){
 		}else{
 			expectBin = BinDest::Discard;
 		}
+	}else if(type == "speak_result"){
+		expectBin = (!speakReqId.empty() && id == speakReqId) ? BinDest::Speak : BinDest::Discard;
+	}else if(type == "speak_error"){
+		if(!speakReqId.empty() && id == speakReqId){
+			ESP_LOGW(TAG, "Server couldn't speak the stock line: %s", reason.c_str());
+			speakReqId.clear();
+		}
 	}else if(type == "speech_error"){
 		if(isTurn){
 			ESP_LOGW(TAG, "speech_error: %s", reason.c_str());
@@ -602,6 +620,8 @@ void NetService::onTextMessage(const std::string& json){
 			failTurnLocked(reason.c_str());
 		}else if(isFiller){
 			fillerReqId.clear();
+		}else if(!speakReqId.empty() && id == speakReqId){
+			speakReqId.clear();
 		}
 	}
 
@@ -619,9 +639,14 @@ void NetService::onBinaryMessage(PSRAMByteBuffer&& data){
 			listenReqId.clear();
 			break;
 		case BinDest::Greeting:
+			announceExpectedUntilUs = 0;
 			cachedGreeting = std::move(data);
 			greetingReqId.clear();
 			ESP_LOGI(TAG, "Greeting ready (%u bytes)", (unsigned) cachedGreeting.size());
+			break;
+		case BinDest::Speak:
+			cachedSpeak = std::move(data);
+			speakReqId.clear();
 			break;
 		case BinDest::Filler:
 			cachedFiller = std::move(data);
@@ -688,16 +713,43 @@ bool NetService::hasRobotCommand() const{
 	return !robotCmdId.empty();
 }
 
-bool NetService::takeRobotCommand(std::string& id, std::string& action){
+bool NetService::takeRobotCommand(std::string& id, std::string& action, std::string& arg){
 	std::lock_guard lock(mtx);
 	if(robotCmdId.empty()){
 		return false;
 	}
 	id = std::move(robotCmdId);
 	action = std::move(robotCmdAction);
+	arg = std::move(robotCmdArg);
 	robotCmdId.clear();
 	robotCmdAction.clear();
+	robotCmdArg.clear();
 	activeRobotCmdId = id;
+	return true;
+}
+
+void NetService::expectAnnouncement(uint32_t ms){
+	announceExpectedUntilUs = esp_timer_get_time() + (int64_t) ms * 1000;
+}
+
+bool NetService::announcementExpected() const{
+	return esp_timer_get_time() < announceExpectedUntilUs.load();
+}
+
+bool NetService::hasQuickCommand() const{
+	std::lock_guard lock(mtx);
+	return !quickCmds.empty();
+}
+
+bool NetService::takeQuickCommand(std::string& id, std::string& action, std::string& arg){
+	std::lock_guard lock(mtx);
+	if(quickCmds.empty()){
+		return false;
+	}
+	id = std::move(quickCmds.front().id);
+	action = std::move(quickCmds.front().action);
+	arg = std::move(quickCmds.front().arg);
+	quickCmds.erase(quickCmds.begin());
 	return true;
 }
 
@@ -730,6 +782,50 @@ bool NetService::takeGreeting(PSRAMByteBuffer& out){
 	out = std::move(cachedGreeting);
 	cachedGreeting = PSRAMByteBuffer();
 	return true;
+}
+
+bool NetService::requestSpeak(const std::string& text){
+	std::string id;
+	{
+		std::lock_guard lock(mtx);
+		if(!serverUp.load()){
+			return false;
+		}
+		PSRAMByteBuffer().swap(cachedSpeak);
+		id = "v-" + std::to_string(++idCounter);
+		speakReqId = id;
+	}
+	cJSON* root = cJSON_CreateObject();
+	cJSON_AddStringToObject(root, "type", "speak_text");
+	cJSON_AddStringToObject(root, "id", id.c_str());
+	cJSON_AddStringToObject(root, "text", text.c_str());
+	char* json = cJSON_PrintUnformatted(root);
+	const bool sent = json && sendText(json);
+	cJSON_free(json);
+	cJSON_Delete(root);
+	if(!sent){
+		std::lock_guard lock(mtx);
+		if(speakReqId == id){
+			speakReqId.clear();
+		}
+	}
+	return sent;
+}
+
+NetService::SpeakState NetService::takeSpeak(PSRAMByteBuffer& out){
+	std::lock_guard lock(mtx);
+	if(!cachedSpeak.empty()){
+		out = std::move(cachedSpeak);
+		cachedSpeak = PSRAMByteBuffer();
+		return SpeakState::Ready;
+	}
+	return speakReqId.empty() ? SpeakState::Failed : SpeakState::Pending;
+}
+
+void NetService::cancelSpeak(){
+	std::lock_guard lock(mtx);
+	speakReqId.clear();
+	PSRAMByteBuffer().swap(cachedSpeak);
 }
 
 void NetService::prefetchFiller(){

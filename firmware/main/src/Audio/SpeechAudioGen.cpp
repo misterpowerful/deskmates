@@ -1,4 +1,5 @@
 #include "SpeechAudioGen.h"
+#include <sdkconfig.h>
 #include "Core/Application.h"
 
 DEFINE_LOG(SpeechAudioGen)
@@ -32,8 +33,11 @@ size_t SpeechAudioGen::getData(uint8_t* buffer, size_t bytes){
 		if(i == 0) break;
 		bytesTransferred += i;
 	}
+#if CONFIG_BB_STOCK_VOICE
+	// The stock voice's sound; the companion voice from the server plays as it is.
 	const size_t sampleCount = bytesTransferred / sizeof(int16_t);
 	compressor.process(reinterpret_cast<int16_t*>(buffer), sampleCount);
 	reverb.process(reinterpret_cast<int16_t*>(buffer), sampleCount);
+#endif
 	return bytesTransferred;
 }

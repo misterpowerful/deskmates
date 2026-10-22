@@ -1,4 +1,5 @@
 #include "SummonEventRoutine.h"
+#include "Net/RobotControl.h"
 #include "States/BBStateMachine.h"
 #include <Statics/ApplicationStatics.h>
 #include <Core/Application.h>
@@ -45,7 +46,8 @@ Routine::TickingState SummonEventRoutine::tick(float deltaTime){
 		CMF_LOG(SummonEventRoutine, LogLevel::Info, "Unsafe proximity state - interrupting");
 		baseBoard->stopMotors();
 		speak(Phrase::RoutineInterrupted, SummonData::Phase::Interrupted);
-		report("interrupted");
+		const char* why = RobotControl::takeStopReason(); // "edge" or "obstacle"
+		report(why ? why : "interrupted");
 		return TickingState::Done;
 	}
 
@@ -74,7 +76,8 @@ Routine::TickingState SummonEventRoutine::tick(float deltaTime){
 			if(!motionService->isUprightOnGround()){
 				CMF_LOG(SummonEventRoutine, LogLevel::Info, "Not upright on the ground - skipping");
 				speak(Phrase::CannotMove, SummonData::Phase::Unsafe);
-				report("unsafe");
+				const char* why = RobotControl::takeStopReason();
+				report(why ? why : "unsafe");
 				return TickingState::Done;
 			}
 
@@ -244,11 +247,11 @@ void SummonEventRoutine::report(const char* outcome){
 
 void SummonEventRoutine::onProximityReading(ProxState front, ProxState bottom){
 	proxReadingReceived = true;
-	proxUnsafe = (front == ProxState::Covered);
+	proxUnsafe = RobotControl::unsafeToMove(front, bottom);
 }
 
 void SummonEventRoutine::onProximityChange(ProxSensor sensor, bool state){
-	if(sensor == ProxSensor::Front && state){
+	if(RobotControl::stopsMovement(sensor, state)){
 		proxInterrupted = true;
 	}
 }

@@ -90,6 +90,10 @@ void MotionService::proximityChanged(ProxSensor sensor, bool thresholdChange){
 
 	if(!thresholdChange){
 		CMF_LOG(MotionService, LogLevel::Debug, "bottom IR raised");
+		// Whatever is driving the wheels (a routine, a turn toward the speaker), never drive off an edge.
+		if(BaseBoard* baseboard = getApp()->getService<BaseBoard>()){
+			baseboard->stopMotors();
+		}
 		proximityLifted = true;
 		xSemaphoreGive(sem);
 	} else{

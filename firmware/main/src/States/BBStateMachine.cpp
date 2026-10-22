@@ -1,4 +1,7 @@
 #include "BBStateMachine.h"
+#include "Net/RobotControl.h"
+#include "Net/NetService.h"
+#include <Util/ServiceLocator.h>
 
 BBStateMachine::BBStateMachine(TickType_t interval /*= CONFIG_CMF_STATEMACHINE_TICK_INTERVAL / portTICK_PERIOD_MS*/,
 	size_t stackSize /*= CONFIG_CMF_STATEMACHINE_STACK_SIZE*/, uint8_t threadPriority /*= CONFIG_CMF_STATEMACHINE_THREAD_PRIORITY*/,
@@ -102,6 +105,10 @@ TickType_t BBStateMachine::getEventScanningTime() const noexcept{
 		return Super::getEventScanningTime();
 	}
 
+	if(ServiceLocator::NetServiceInstance && ServiceLocator::NetServiceInstance->hasQuickCommand()){
+		return 0;
+	}
+
 	const int64_t dynamicTickInterval = currentState->getDynamicTickInterval();
 
 	if(dynamicTickInterval < 0){
@@ -121,6 +128,8 @@ void BBStateMachine::tick(float deltaTime) noexcept{
 		currentState = next(stateBuf, this);
 		next = nullptr;
 	}
+
+	RobotControl::tick(); // Gatsby's quick commands (LED, status) are answered in any state
 
 	if(currentState != nullptr){
 		currentState->tick(deltaTime);

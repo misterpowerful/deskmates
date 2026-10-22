@@ -6,6 +6,7 @@
 #include <memory>
 #include <mutex>
 #include <string>
+#include <vector>
 #include <esp_event.h>
 #include <esp_netif.h>
 #include <esp_timer.h>
@@ -77,7 +78,26 @@ public:
 	bool hasRobotCommand() const;
 
 	/** Takes the waiting command; it becomes the active one until takeActiveRobotCommand(). */
-	bool takeRobotCommand(std::string& id, std::string& action);
+	bool takeRobotCommand(std::string& id, std::string& action, std::string& arg);
+
+	/** Quick commands (LED board, status): answered at once by RobotControl::tick(), in any state. */
+	bool hasQuickCommand() const;
+	bool takeQuickCommand(std::string& id, std::string& action, std::string& arg);
+
+	/** Stock voice off: asks the server to speak a stock line (speak_text); one at a time. */
+	bool requestSpeak(const std::string& text);
+	enum class SpeakState : uint8_t { Pending, Ready, Failed };
+	/** Ready: out holds the line's 16 kHz PCM. Failed: no request in flight, or the server couldn't speak it. */
+	SpeakState takeSpeak(PSRAMByteBuffer& out);
+	void cancelSpeak();
+
+	/** Sends a ready-made JSON frame (RobotControl's results and board events). */
+	bool sendJson(const std::string& json){ return sendText(json); }
+
+	/** A board event was just reported: Gatsby's acknowledgement is on its way (for up to ms). */
+	void expectAnnouncement(uint32_t ms);
+	/** An expected announcement hasn't arrived yet (bounded by expectAnnouncement's ms). */
+	bool announcementExpected() const;
 
 	/** The routine running the active command claims its id (to report back); "" if none. */
 	std::string takeActiveRobotCommand();
@@ -186,7 +206,10 @@ private:
 
 	// Shared state, guarded by mtx
 	mutable std::mutex mtx;
-	enum class BinDest : uint8_t { None, Filler, Greeting, ListenAck, Turn, Discard };
+	enum class BinDest : uint8_t { None, Filler, Greeting, ListenAck, Turn, Discard, Speak };
+	std::string speakReqId; // speak_text in flight
+	PSRAMByteBuffer cachedSpeak;
+	std::atomic<int64_t> announceExpectedUntilUs{ 0 };
 	BinDest expectBin = BinDest::None;
 	size_t expectBinBytes = 0; // size the server announced for the next binary frame (0 = unknown)
 	uint32_t idCounter = 0;
@@ -194,7 +217,9 @@ private:
 	std::string fillerReqId;
 	PSRAMByteBuffer cachedFiller;
 
-	std::string robotCmdId, robotCmdAction; // waiting robot_command
+	std::string robotCmdId, robotCmdAction, robotCmdArg; // waiting robot_command
+	struct QuickCommand { std::string id, action, arg; };
+	std::vector<QuickCommand> quickCmds;
 	std::string activeRobotCmdId;           // taken by IdleState, claimed by the routine
 
 	bool greetingWanted = true; // only the first connection after boot is greeted

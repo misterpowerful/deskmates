@@ -596,6 +596,12 @@ CONFIG_PARTITION_TABLE_MD5=y
 # end of Partition Table
 
 #
+# ButterBot
+#
+# CONFIG_BB_STOCK_VOICE is not set
+# end of ButterBot
+
+#
 # CMF
 #
 # CONFIG_CMF_LVGL is not set

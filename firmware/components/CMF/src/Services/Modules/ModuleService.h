@@ -11,6 +11,7 @@
 #include "ModuleDevice.h"
 #include "ModuleDefs.h"
 #include "Event/EventDelegate.h"
+#include <esp_timer.h>
 
 DEFINE_LOG(ModuleService)
 
@@ -79,10 +80,24 @@ public:
 private:
 	const std::array<Modules::BusPins, CONFIG_CMF_MODULESERVICE_NUM_BUSES> busPins;
 
+	// Normal: det1 low, det2 high, the board's address on the address pins.
+	// LEDQuirk: the official LED boards (two, both the same) sit loose: their address (16) reads while the
+	// detect pins often never do, so stock firmware rarely detects them. The detect pins alone can't be
+	// trusted (an empty slot reads det1 high and either det2), but an empty slot always reads address 63.
+	enum class Detect : uint8_t { Empty, Normal, LEDQuirk };
+	static constexpr int64_t DetectSettleUs = 300000; // a board sliding in passes through other readings
+	static constexpr uint8_t LEDAddress = 16;
+	static constexpr uint8_t EmptyAddress = 63; // an empty slot: every address pin pulled high
+
 	struct BusContext {
 		bool inserted;
 		Modules::Type type;
 		StrongObjectPtr<ModuleDevice> instance;
+		int8_t lastDet = -1; // det1/det2 bits last seen, to log changes
+		uint8_t lastAddr = EmptyAddress; // address pins at the last reading
+		Detect current = Detect::Empty; // what the slot is treated as holding
+		Detect pending = Detect::Empty; // latest reading, accepted once steady for DetectSettleUs
+		int64_t pendingSinceUs = 0;
 	} busContexts[CONFIG_CMF_MODULESERVICE_NUM_BUSES];
 
 
@@ -97,39 +112,69 @@ private:
 	}
 
 	void loopCheck(uint8_t bus){
-		const bool nowInserted = checkInserted(bus);
-		if(busContexts[bus].inserted && !nowInserted){
-			busContexts[bus].inserted = false;
-			const auto removed = busContexts[bus].type;
+		BusContext& ctx = busContexts[bus];
+		Detect reading = checkInserted(bus);
+		// A loose board (the LED ones) loses a detect contact when the robot moves while its address pins
+		// still read it: only count it removed once the address pins read an empty slot too.
+		if(reading == Detect::Empty && ctx.current != Detect::Empty && ctx.lastAddr != EmptyAddress){
+			reading = ctx.current;
+		}
+		const int64_t now = esp_timer_get_time();
+		if(reading != ctx.pending){
+			ctx.pending = reading;
+			ctx.pendingSinceUs = now;
+		}
+		if(ctx.pending == ctx.current || now - ctx.pendingSinceUs < DetectSettleUs){
+			return;
+		}
+		if(ctx.pending != Detect::Empty && ctx.current != Detect::Empty){
+			ctx.current = ctx.pending; // the same board, its detect pins seating or slipping
+			return;
+		}
 
-			busContexts[bus].type = Modules::Type::Unknown;
-
-			CMF_LOG(ModuleService, LogLevel::Info, "Module %d removed from bus %d", (int) removed, bus);
-			ModulesEvent.broadcast(bus, removed, Action::Remove);
-
-			if(busContexts[bus].instance.isValid()){
-				delete *busContexts[bus].instance;
+		if(ctx.current != Detect::Empty){
+			removeModule(bus);
+		}
+		ctx.current = ctx.pending;
+		if(ctx.current != Detect::Empty){
+			if(ctx.current == Detect::LEDQuirk){
+				CMF_LOG(ModuleService, LogLevel::Info, "address 16 without the detect pins: treating as an LED board");
 			}
-			busContexts[bus].instance = nullptr;
-
-			registerSubAddressPinsInput(bus);
-		}else if(!busContexts[bus].inserted && nowInserted){
-			const Modules::Type type = checkAddr(bus);
-
-			busContexts[bus].type = type;
-			busContexts[bus].inserted = true;
-
-			CMF_LOG(ModuleService, LogLevel::Info, "Module %d inserted into bus %d", (int) type, bus);
-			ModulesEvent.broadcast(bus, type, Action::Insert);
-
-			if(type != Modules::Type::Unknown){
-				registerSubAddressPinsModule(bus, type);
-				busContexts[bus].instance = CreateModuleDevice(this, type, busPins[bus]);
-			}
+			insertModule(bus, ctx.current == Detect::LEDQuirk ? Modules::Type::RM_LED : checkAddr(bus));
 		}
 	}
 
-	bool checkInserted(uint8_t bus){
+	void removeModule(uint8_t bus){
+		busContexts[bus].inserted = false;
+		const auto removed = busContexts[bus].type;
+
+		busContexts[bus].type = Modules::Type::Unknown;
+
+		CMF_LOG(ModuleService, LogLevel::Info, "Module %d removed from bus %d", (int) removed, bus);
+		ModulesEvent.broadcast(bus, removed, Action::Remove);
+
+		if(busContexts[bus].instance.isValid()){
+			delete *busContexts[bus].instance;
+		}
+		busContexts[bus].instance = nullptr;
+
+		registerSubAddressPinsInput(bus);
+	}
+
+	void insertModule(uint8_t bus, Modules::Type type){
+		busContexts[bus].type = type;
+		busContexts[bus].inserted = true;
+
+		CMF_LOG(ModuleService, LogLevel::Info, "Module %d inserted into bus %d", (int) type, bus);
+		ModulesEvent.broadcast(bus, type, Action::Insert);
+
+		if(type != Modules::Type::Unknown){
+			registerSubAddressPinsModule(bus, type);
+			busContexts[bus].instance = CreateModuleDevice(this, type, busPins[bus]);
+		}
+	}
+
+	Detect checkInserted(uint8_t bus){
 		//TODO - make DET pin reading interrupt driven instead of polling
 
 		const auto pin1 = busPins[bus].detPins[0];
@@ -139,7 +184,26 @@ private:
 		const bool det2 = pin2.driver->read(pin2.port);
 
 		CMF_LOG(ModuleService, Debug, "det1: %d, det2: %d", det1, det2);
-		return det1 == 0 && det2 == 1;
+		// A board that never registers: show what it does to the detect pins (and the address pins).
+		uint8_t addr = 0;
+		for(uint8_t i = 0; i < 6; i++){
+			const InputPin pin = busPins[bus].addr[i];
+			if(pin.driver->read(pin.port) > 0.0f){
+				addr |= 1 << i;
+			}
+		}
+		const int8_t det = (det1 ? 1 : 0) | (det2 ? 2 : 0);
+		busContexts[bus].lastAddr = addr;
+		if(det != busContexts[bus].lastDet){
+			CMF_LOG(ModuleService, LogLevel::Info, "bus %d det1 %d det2 %d, address pins %d", bus, det1, det2, addr);
+			busContexts[bus].lastDet = det;
+		}
+		if(det1 == 0 && det2 == 1) return Detect::Normal;
+#ifdef CONFIG_RM_LED
+		// Its address pins seat before its detect pins (if they ever do), and an empty slot reads 63.
+		if(addr == LEDAddress) return Detect::LEDQuirk;
+#endif
+		return Detect::Empty;
 	}
 
 	Modules::Type checkAddr(uint8_t bus){

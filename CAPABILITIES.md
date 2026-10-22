@@ -249,6 +249,17 @@ TODO (firmware, out of scope here): if the bot is mid-reply when a task
 finishes, the completion chime should be held and played once that reply
 is done rather than cutting in — not implemented on the server side.
 
+### Photo tasks
+
+A photo can also be handed to a background worker (today: from the webapp's
+Tasks view; a robot camera frame can use the same path later). It is stored
+beside the task file in `delegated-tasks/` and shows up in `list_tasks` /
+`get_task_result` like any other task, so "what did my photo turn out to
+be?" works by voice. The worker is a headless `claude -p` limited to the
+Read tool — deliberately not the Gmail/Drive/Calendar tool list, and not
+widened by `WORKER_ALLOWED_TOOLS` — because text inside an image is
+untrusted input. Images are JPEG/PNG/WebP, at most 5 MB.
+
 ## Interfaces
 
 - **The physical bot** — connects over a WebSocket, sends recorded audio,

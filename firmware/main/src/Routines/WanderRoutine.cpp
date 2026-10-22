@@ -1,4 +1,5 @@
 #include "WanderRoutine.h"
+#include "Net/RobotControl.h"
 #include <cstdlib>
 #include <Util/stdafx.h>
 #include <Core/Application.h>
@@ -117,11 +118,11 @@ void WanderRoutine::startAction(const Action& action){
 
 void WanderRoutine::onProximityReading(ProxState front, ProxState bottom){
 	proxReadingReceived = true;
-	proxUnsafe = (front == ProxState::Covered);
+	proxUnsafe = RobotControl::unsafeToMove(front, bottom);
 }
 
 void WanderRoutine::onProximityChange(ProxSensor sensor, bool state){
-	if(sensor == ProxSensor::Front && state){
+	if(RobotControl::stopsMovement(sensor, state)){
 		proxInterrupted = true;
 	}
 }

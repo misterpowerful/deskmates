@@ -26,7 +26,7 @@ namespace TurnToSpeaker {
 	void onUtteranceEnd(AudioFrontend* afe, uint32_t speechMs);
 
 	/** State machine task (ConverseState, once the speech is sent): start the decided turn, if any.
-	 *  The owner's order: send the speech, then turn; the reply plays as soon as it arrives, mid-turn
+	 *  the owner's order: send the speech, then turn; the reply plays as soon as it arrives, mid-turn
 	 *  if need be. Only the next listen waits for the turn to finish. */
 	void service();
 

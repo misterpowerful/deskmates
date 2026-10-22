@@ -17,6 +17,7 @@
 #include "Audio/StreamAudioSource.h"
 #include "Audio/SpeechAudioSource.h"
 #include "Audio/SpeechGen.h"
+#include "Audio/GatsbyLines.h"
 #include "Net/NetService.h"
 #include "Util/PSRAMAllocator.h"
 #include "Enums.h"
@@ -221,6 +222,9 @@ void ConverseState::tick(float){
 
 void ConverseState::playFallback(){
 	phase = Phase::Finishing;
+	if(GatsbyLines::play(audio, GatsbyLines::Kind::Offline)){
+		return;
+	}
 	if(audio && ServiceLocator::SpeechAudioGenInstance){
 		audio->enqueue(ServiceLocator::SpeechAudioGenInstance.get(), std::make_unique<SpeechAudioSource>(SpeechGen::InputType::Text, FallbackLine));
 	}

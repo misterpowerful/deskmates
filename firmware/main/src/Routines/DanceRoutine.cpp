@@ -1,4 +1,5 @@
 #include "DanceRoutine.h"
+#include "Net/RobotControl.h"
 #include "States/BBStateMachine.h"
 #include <Statics/ApplicationStatics.h>
 #include <Util/stdafx.h>
@@ -282,12 +283,12 @@ void DanceRoutine::onButtonEvent(int button, ISRButtonInput::Action action){
 
 void DanceRoutine::onProximityReading(ProxState front, ProxState bottom){
 	proxReadingReceived = true;
-	proxUnsafe = (front == ProxState::Covered);
+	proxUnsafe = RobotControl::unsafeToMove(front, bottom);
 }
 
 void DanceRoutine::onProximityChange(ProxSensor sensor, bool state){
-	if(sensor == ProxSensor::Front && state){
-		CMF_LOG(DanceRoutine, Debug, "front obstacle");
+	if(RobotControl::stopsMovement(sensor, state)){
+		CMF_LOG(DanceRoutine, Debug, "obstacle or edge");
 		interrupted = true;
 	}
 }

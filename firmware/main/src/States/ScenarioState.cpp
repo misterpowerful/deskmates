@@ -6,6 +6,7 @@
 #include "IdleState.h"
 #include "RCState.h"
 #include "Services/ScenarioRoutineService.h"
+#include "Net/RobotControl.h"
 
 DEFINE_LOG(ScenarioState)
 
@@ -26,6 +27,7 @@ ScenarioState::ScenarioState(BBStateMachine* sm) : State(sm){
 }
 
 ScenarioState::~ScenarioState(){
+    RobotControl::endRoutine(); // a routine Gatsby started: report what it would have said
     if(!ServiceLocator::ScenarioRoutineServiceInstance){
         CMF_LOG(ScenarioState, LogLevel::Warning, "ScenarioRoutineService missing in destructor");
         return;

@@ -1,3 +1,5 @@
+#include <sdkconfig.h>
+#if CONFIG_BB_STOCK_VOICE
 #include "SpeechGen.h"
 #include <utility>
 #include "Memory/ObjectMemory.h"
@@ -335,3 +337,5 @@ std::string SpeechGen::multinetToCMU(const std::string& input){
 
 	return result;
 }
+
+#endif // CONFIG_BB_STOCK_VOICE

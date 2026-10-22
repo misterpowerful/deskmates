@@ -38,6 +38,7 @@ import { readConfig, listPersonalities, setActivePersonality, LLM_CHOICES, DEFAU
 import { resumeSession, expireSession } from "./src/sessionMemory.js";
 import { getMemorySnapshot, removeMemoryFact, removeInsight, UnknownPersonalityError } from "./src/longTermMemory.js";
 import { ensureDelegatedTasksDir, reconcileOrphanedTasks, sweepRetention } from "./src/delegatedTasks.js";
+import { handleTasksApi, sendTasksApiResult, readRawBody } from "./src/taskApi.js";
 import { startStream, appendStreamChunk, endStream, cancelStream } from "./src/speechStream.js";
 import { startLiveTranscriber } from "./src/liveStt.js";
 
@@ -132,6 +133,21 @@ const httpServer = http.createServer((req, res) => {
       return;
     }
     try {
+      // Webapp Tasks view: delegated-task queue + photo upload (src/taskApi.js).
+      if (url.pathname === "/api/tasks" || url.pathname.startsWith("/api/tasks/")) {
+        handleTasksApi({
+          method: req.method,
+          pathname: url.pathname,
+          query: url.searchParams,
+          readBody: () => readRawBody(req),
+        })
+          .then((result) => sendTasksApiResult(res, result))
+          .catch((err) => {
+            logError("tasks api response failed", { error: err?.message ?? String(err) });
+            res.destroy();
+          });
+        return;
+      }
       if (url.pathname === "/api/turns") {
         sendApiJson(res, 200, queryTurns({
           limit: Number(url.searchParams.get("limit")) || 100,

@@ -135,3 +135,11 @@ The USB cable also pulls loose when he spins 90 deg, which dropped the logs twic
 direction-finding and turning code removed; it remains in history (8311382..a90eeb4) if the camera
 approach is tried later. Last finding: with DC removed, the right side read correctly, but from his
 left (especially far away) it still read "right" or "ahead" at times.
+
+## 2026-10-21 board announcements + LED dropout
+- Announce timing now ~2.0 s contact→speech (climate in/out, LED in), canned path. One 7 s case: server personality was "chet" (no canned lines) → LLM fallback.
+- LED board read correctly (0/1/16) after creeping into place untouched; then turn-to-speaker jostled it, det1 dropped with address still 16 → removed 1 s before "led on". Fix: keep a seated board while address pins != 63 (empty slot always reads 63). Flashed 13:10.
+- 13:31: LED detection now by address: steady address 16 = LED board regardless of det pins (empty slot always 63); present→present det changes don't re-announce.
+- 13:47: moving routines stop on bottom sensor losing floor (edge) as well as front obstacle; Gatsby moves take cm/degrees; result reports edge/obstacle. Server side edited+tested, awaiting the owner's commit/restart.
+- 13:59: bot fell off desk. Move was refused (charging); only motion was a 45° turn-to-speaker, no edge check. Fix: MotionService stops motors on any floor loss; turn skips if floor lost.
+- 15:08: verified by the owner: moves stop as soon as a table edge is reached or he's picked up (outcome edge, Gatsby explains). forward:10 distance arg works. Server restarted 15:06 (uncommitted).

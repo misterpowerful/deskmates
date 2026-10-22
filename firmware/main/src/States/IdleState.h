@@ -73,6 +73,13 @@ private:
 	void onWakePhrase(bool recognized, int index, const std::string& transcript, float confidence);
 
 	bool maybeStartRobotCommand();
+	bool startCommandRoutine(class NetService* net, const std::string& id, const std::string& action, const std::string& arg);
+	bool leavingForCommand = false;
+	void listenNow();
+	static constexpr int64_t ServerPollMs = 250;
+	// Gatsby's moves, from the stock steps: 10 cm forward in 2700 ms, a 90 degree turn in 1700 ms.
+	static constexpr long MoveMsPerCm = 270, MoveMinCm = 2, MoveMaxCm = 100;
+	static constexpr long TurnMsPer90Deg = 1700, TurnMinDeg = 5, TurnMaxDeg = 360;
 	void startWake();
 	void stopWake();
 	// Companion WiFi is up (NetService is created after IdleState at boot, so this polls until it is).

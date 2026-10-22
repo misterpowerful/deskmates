@@ -1,4 +1,5 @@
 #include "PersonRoutine.h"
+#include "Net/RobotControl.h"
 #include "States/BBStateMachine.h"
 #include <Statics/ApplicationStatics.h>
 #include <Core/Application.h>
@@ -212,11 +213,11 @@ void PersonRoutine::onDetect(int faceCount, bool known, glm::vec2 pos, glm::vec2
 
 void PersonRoutine::onProximityReading(ProxState front, ProxState bottom){
 	proxReadingReceived = true;
-	proxUnsafe = (front == ProxState::Covered);
+	proxUnsafe = RobotControl::unsafeToMove(front, bottom);
 }
 
 void PersonRoutine::onProximityChange(ProxSensor sensor, bool state){
-	if(sensor == ProxSensor::Front && state){
+	if(RobotControl::stopsMovement(sensor, state)){
 		proxInterrupted = true;
 	}
 }

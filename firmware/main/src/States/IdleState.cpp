@@ -26,6 +26,14 @@
 #include "Routines/EventRoutines/SummonEventRoutine.h"
 #include "Routines/WanderRoutine.h"
 #include "Net/NetService.h"
+#include "Net/RobotControl.h"
+#include "ScenarioState.h"
+#include "ScenarioRoutineMappings.h"
+#include "Services/ScenarioRoutineService.h"
+#include "Services/BaseBoard.h"
+#include "Services/MotionService.h"
+#include <optional>
+#include <algorithm>
 #include "Audio/MemoryAudioSource.h"
 #include "Audio/PCMPassthroughGenerator.h"
 #include <Services/Audio/Audio.h>
@@ -203,6 +211,9 @@ void IdleState::tick(float deltaTime){
 	// A robot command from Gatsby (via the server) comes first.
 	if(sm->getActiveRoutine() == nullptr){
 		maybeStartRobotCommand();
+		if(leavingForCommand){
+			return; // a move/dance routine starts in ScenarioState
+		}
 	}
 
 	// Start a new routine if nothing is active. Pending events take priority over random routines.
@@ -228,7 +239,9 @@ void IdleState::tick(float deltaTime){
 	// else needs the microphone (or the speaker: the bot shouldn't hear itself).
 	if(sm->getActiveRoutine() == nullptr && !sm->isTransitionPending()){
 		maybePlayGreeting();
-		if(!greetingPlaying){
+		// A board acknowledgement on its way plays first: the wake model's reload would hold it ~2.5 s.
+		const bool announcementDue = ServiceLocator::NetServiceInstance && ServiceLocator::NetServiceInstance->announcementExpected();
+		if(!greetingPlaying && !announcementDue){
 			startWake();
 		}
 	}
@@ -258,15 +271,12 @@ bool IdleState::wakeReady(){
 
 bool IdleState::maybeStartRobotCommand(){
 	NetService* net = ServiceLocator::NetServiceInstance.get();
-	std::string id, action;
-	if(net == nullptr || !net->takeRobotCommand(id, action)){
+	std::string id, action, arg;
+	if(net == nullptr || !net->takeRobotCommand(id, action, arg)){
 		return false;
 	}
 	if(action != "summon"){
-		ESP_LOGW("WakeWord", "Unsupported robot command \"%s\"", action.c_str());
-		net->takeActiveRobotCommand();
-		net->sendRobotResult(id, action.c_str(), "error", false, false);
-		return false;
+		return startCommandRoutine(net, id, action, arg);
 	}
 	ESP_LOGI("WakeWord", "Robot command %s: starting summon", id.c_str());
 	stopWake();
@@ -274,6 +284,59 @@ bool IdleState::maybeStartRobotCommand(){
 	data.type = EventBag::EventType::Summon;
 	sm->startEventRoutine(EventRoutines[static_cast<uint8_t>(EventBag::EventType::Summon)], data);
 	rescheduleRandomRoutine();
+	return true;
+}
+
+// Gatsby's move/dance commands run the stock routines; their stock-voice lines go back to him instead.
+bool IdleState::startCommandRoutine(NetService* net, const std::string& id, const std::string& action, const std::string& arg){
+	net->takeActiveRobotCommand(); // reported by RobotControl, not by a routine claiming the id
+	// "forward:25" = 25 cm, "left:45" = 45 degrees; a bare direction is the stock step (10 cm, 90 degrees).
+	const size_t colon = arg.find(':');
+	const std::string dir = arg.substr(0, colon);
+	const long amount = colon == std::string::npos ? 0 : std::strtol(arg.c_str() + colon + 1, nullptr, 10);
+	uint32_t moveMs = 0;
+	if(amount > 0 && (dir == "forward" || dir == "backward")){
+		moveMs = std::clamp<long>(amount, MoveMinCm, MoveMaxCm) * MoveMsPerCm;
+	}else if(amount > 0 && (dir == "left" || dir == "right")){
+		moveMs = std::clamp<long>(amount, TurnMinDeg, TurnMaxDeg) * TurnMsPer90Deg / 90;
+	}
+
+	std::optional<std::pair<BB::Action::Scenario, ScenarioData>> scenario;
+	if(action == "dance"){
+		scenario = { BB::Action::Scenario::Dance, {} };
+	}else if(action == "move"){
+		using Dir = VoiceScenarioData::Direction;
+		if(dir == "forward") scenario = { BB::Action::Scenario::VoiceControl, VoiceScenarioData{ Dir::Forward } };
+		else if(dir == "backward") scenario = { BB::Action::Scenario::VoiceControl, VoiceScenarioData{ Dir::Backward } };
+		else if(dir == "left") scenario = { BB::Action::Scenario::VoiceControl, VoiceScenarioData{ Dir::Left } };
+		else if(dir == "right") scenario = { BB::Action::Scenario::VoiceControl, VoiceScenarioData{ Dir::Right } };
+		else if(dir == "around") scenario = { BB::Action::Scenario::VoiceControl, VoiceScenarioData{ Dir::Rotate } };
+	}
+	const RoutineFactory factory = scenario ? routineForScenario(*scenario) : nullptr;
+	if(factory == nullptr || !ServiceLocator::ScenarioRoutineServiceInstance){
+		ESP_LOGW("WakeWord", "Unsupported robot command \"%s %s\"", action.c_str(), arg.c_str());
+		net->sendRobotResult(id, action.c_str(), "unsupported", false, false);
+		return false;
+	}
+
+	const Application* app = ApplicationStatics::getApplication();
+	BaseBoard* base = app->getService<BaseBoard>();
+	MotionService* motion = app->getService<MotionService>();
+	if(base && base->getChargingState() != ChargingState::Unplugged){
+		net->sendRobotResult(id, action.c_str(), "charging", false, false);
+		return false;
+	}
+	if(motion && !motion->isUprightOnGround()){
+		net->sendRobotResult(id, action.c_str(), "unsafe", false, false);
+		return false;
+	}
+
+	ESP_LOGI("WakeWord", "Robot command %s: %s %s (%u ms)", id.c_str(), action.c_str(), arg.c_str(), (unsigned) moveMs);
+	stopWake();
+	RobotControl::beginRoutine(id, action, moveMs);
+	ServiceLocator::ScenarioRoutineServiceInstance->setRoutineFactory(factory);
+	leavingForCommand = true;
+	sm->transitionTo<ScenarioState>();
 	return true;
 }
 
@@ -513,12 +576,26 @@ int64_t IdleState::getDynamicTickInterval() const{
 		return 0;
 	}
 
-	return nextRandomRoutineTime - millis();
+	// Frames from the server (announcements, robot commands) don't wake this thread: in companion
+	// mode check back often instead of sleeping until the next random routine (a board announcement
+	// waited 4.5 s here, ready to play).
+	const int64_t untilRandom = nextRandomRoutineTime - millis();
+	return NetService::isConfigured() ? std::min<int64_t>(untilRandom, ServerPollMs) : untilRandom;
+}
+
+// Button or app "listen": hand the loaded wake model over like a wake phrase does. Reloading it took
+// ~2.5 s after the listening prompt, and a question asked straight after the prompt was lost.
+void IdleState::listenNow(){
+	if(wakeActive){
+		warmHandoff = true;
+		ListenState::requestWarmStart();
+	}
+	sm->transitionTo<ListenState>();
 }
 
 void IdleState::onCommand(Ctrl::Command cmd){
 	if(cmd == Ctrl::Command::Listen){
-		sm->transitionTo<ListenState>();
+		listenNow();
 		return;
 	}
 
@@ -565,5 +642,5 @@ void IdleState::onButtonEvent(int button, ISRButtonInput::Action action){
 		return;
 	}
 
-	sm->transitionTo<ListenState>();
+	listenNow();
 }

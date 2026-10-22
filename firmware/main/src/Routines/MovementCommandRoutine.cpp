@@ -1,4 +1,5 @@
 #include "MovementCommandRoutine.h"
+#include "Net/RobotControl.h"
 #include <Statics/ApplicationStatics.h>
 #include <Util/stdafx.h>
 #include <Core/Application.h>
@@ -69,7 +70,8 @@ Routine::TickingState MovementCommandRoutine::tick(float deltaTime){
 			abort();
 		}
 
-		const MovementCommand command = getMovementCommand();
+		MovementCommand command = getMovementCommand();
+		command.duration = RobotControl::moveDurationMs(command.duration);
 
 		const int16_t id = Phrases::get(command.phrase);
 		if(id < 0) return TickingState::Done;
@@ -130,11 +132,11 @@ void MovementCommandRoutine::speak(Phrase phrase){
 
 void MovementCommandRoutine::onProximityReading(ProxState front, ProxState bottom){
 	proxReadingReceived = true;
-	proxUnsafe = (front == ProxState::Covered);
+	proxUnsafe = RobotControl::unsafeToMove(front, bottom);
 }
 
 void MovementCommandRoutine::onProximityChange(ProxSensor sensor, bool state){
-	if(sensor == ProxSensor::Front && state){
+	if(RobotControl::stopsMovement(sensor, state)){
 		proxInterrupted = true;
 	}
 }

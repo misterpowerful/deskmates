@@ -26,6 +26,10 @@ mode off, the robot behaves like stock.
   [PROGRESS.md](PROGRESS.md).
 - **Robot commands from the server.** The server can ask the robot to run a built-in
   routine, such as searching for a person, and gets the result back.
+- **Edge safety.** Moving routines stop when the floor sensor loses the surface, so
+  the robot halts at a table edge or when picked up. Movement commands take a distance
+  or angle and report why they stopped (done, obstacle or edge), so the character can
+  explain it.
 - **Memory-constrained build.** Built with `-Os`, TLS using software crypto to spare
   internal RAM, and PSRAM-backed allocations. The app partition is nearly full.
 
