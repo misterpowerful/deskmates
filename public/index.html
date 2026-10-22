@@ -1,0 +1,1209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deskmates Console</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #14161a;
+    --panel: #1c1f26;
+    --border: #2c3038;
+    --text: #e6e8eb;
+    --muted: #8b93a1;
+    --accent: #5eb1ff;
+    --ok: #4caf7d;
+    --bad: #e2564f;
+    --warn: #d9a441;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  header {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  header h1 {
+    font-size: 14px;
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .status.connected .dot { background: var(--ok); }
+  .status.connecting .dot { background: var(--warn); }
+  .status.error .dot { background: var(--bad); }
+
+  .conn-form {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    flex-wrap: wrap;
+  }
+  input, select, button, textarea {
+    font-family: inherit;
+    font-size: 12px;
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 5px 8px;
+  }
+  input:focus, select:focus, textarea:focus { outline: 1px solid var(--accent); }
+  button {
+    cursor: pointer;
+    background: #262a33;
+  }
+  button:hover:not(:disabled) { border-color: var(--accent); }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  button.primary { background: var(--accent); color: #0c1116; border-color: var(--accent); font-weight: 600; }
+  button.danger { border-color: var(--bad); color: var(--bad); }
+
+  main {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+  }
+  #log {
+    flex: 1;
+    /* Flex items default to min-width: auto, which floors their shrink at
+       their unwrapped content width — without this, a long reply line
+       forces #log (and the whole page) wider instead of wrapping. */
+    min-width: 0;
+    overflow-y: auto;
+    padding: 10px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .entry {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  .entry .t { color: var(--muted); flex-shrink: 0; font-size: 11px; }
+  .entry .dir { flex-shrink: 0; font-weight: 700; width: 14px; }
+  /* The message text itself is the one child with no intrinsic cap — give
+     it the remaining row width and let it shrink below its unwrapped
+     width (same min-width: auto issue as #log above), otherwise long
+     lines (e.g. deep_thoughtful replies) push past the container edge
+     instead of wrapping. */
+  .entry .msg { flex: 1; min-width: 0; }
+  .entry.sent { background: rgba(94,177,255,0.06); }
+  .entry.sent .dir { color: var(--accent); }
+  .entry.recv { background: rgba(76,175,125,0.06); }
+  .entry.recv .dir { color: var(--ok); }
+  .entry.sys .dir { color: var(--warn); }
+  .entry.err { background: rgba(226,86,79,0.08); }
+  .entry.err .dir { color: var(--bad); }
+  .entry audio { height: 28px; vertical-align: middle; }
+
+  aside {
+    width: 300px;
+    border-left: 1px solid var(--border);
+    padding: 12px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  aside h2 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin: 0 0 8px;
+  }
+  .field { display: flex; flex-direction: column; gap: 3px; margin-bottom: 8px; }
+  .field label { font-size: 11px; color: var(--muted); }
+  .field input, .field select, .field textarea { width: 100%; }
+  textarea { resize: vertical; min-height: 60px; }
+  .row { display: flex; gap: 6px; align-items: center; }
+  .row > button.panel-btn { flex: 1; }
+  .panel-btn { width: 100%; margin-top: 4px; }
+  #rawInput { min-height: 70px; }
+  .or-sep { font-size: 11px; color: var(--muted); text-align: center; margin: 10px 0 4px; }
+  .rec-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--bad);
+    flex-shrink: 0;
+  }
+  .rec-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--bad);
+    animation: rec-pulse 1s infinite;
+  }
+  @keyframes rec-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
+
+  .auto-note {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+  .auto-note strong { color: var(--warn); }
+  .vad-row { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+  .vad-row label { font-size: 11px; color: var(--muted); flex-shrink: 0; }
+  .vad-row input[type="range"] { flex: 1; }
+  .vad-row .vad-val { width: 42px; text-align: right; font-size: 11px; color: var(--muted); flex-shrink: 0; }
+  .vad-meter-track {
+    height: 6px;
+    background: #262a33;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 6px;
+    position: relative;
+  }
+  .vad-meter-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--ok);
+    transition: width 60ms linear;
+  }
+  .vad-meter-track.gated .vad-meter-fill { background: var(--muted); }
+  .vad-meter-track::after {
+    /* threshold marker */
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--threshold-pct, 0%);
+    width: 2px;
+    background: var(--warn);
+  }
+  .auto-state {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .auto-state.recording { color: var(--bad); }
+  .auto-state.playing { color: var(--accent); }
+  .auto-state.listening { color: var(--ok); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Deskmates Console</h1>
+  <div id="status" class="status">
+    <span class="dot"></span><span id="statusText">disconnected</span>
+  </div>
+  <div class="field" style="margin:0;">
+    <select id="personalitySelect" disabled>
+      <option value="">personality…</option>
+    </select>
+  </div>
+  <div class="conn-form">
+    <input id="host" size="34" placeholder="host (e.g. this page's host)">
+    <input id="token" type="password" size="20" placeholder="BOT_AUTH_TOKEN">
+    <button id="connectBtn" class="primary">Connect</button>
+    <button id="disconnectBtn" class="danger" disabled>Disconnect</button>
+    <button id="clearBtn">Clear log</button>
+  </div>
+</header>
+
+<main>
+  <div id="log"></div>
+
+  <aside>
+    <div>
+      <h2>get_canned</h2>
+      <div class="field">
+        <label>mode</label>
+        <select id="cannedMode">
+          <option value="friendly">friendly</option>
+          <option value="sentry_intruder">sentry_intruder</option>
+          <option value="bump_complaint">bump_complaint</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>category</label>
+        <input id="cannedCategory" value="filler">
+      </div>
+      <button id="sendCannedBtn" class="panel-btn" disabled>Send get_canned</button>
+    </div>
+
+    <div>
+      <h2>speech_request</h2>
+      <div class="field">
+        <label>mode</label>
+        <select id="speechMode">
+          <option value="friendly">friendly</option>
+          <option value="sentry_intruder">sentry_intruder</option>
+          <option value="bump_complaint">bump_complaint</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>audio file (sent as the binary frame)</label>
+        <input id="speechFile" type="file" accept="audio/*">
+      </div>
+      <button id="sendSpeechBtn" class="panel-btn" disabled>Send speech_request + audio file</button>
+
+      <div class="or-sep">— or —</div>
+      <div class="field">
+        <label>record from microphone (auto-resampled to 16kHz mono PCM16)</label>
+        <div class="row">
+          <button id="recordBtn" class="panel-btn" disabled>Record</button>
+          <span id="recIndicator" class="rec-indicator" hidden>
+            <span class="rec-dot"></span><span id="recTimer">0:00</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="or-sep">— or —</div>
+      <div class="field">
+        <label>auto conversation mode (hands-free VAD loop)</label>
+        <div class="row">
+          <button id="autoModeBtn" class="panel-btn" disabled>Start auto conversation</button>
+        </div>
+        <div id="autoState" class="auto-state" hidden>listening…</div>
+        <div class="vad-row">
+          <label>threshold</label>
+          <input id="vadThreshold" type="range" min="0.005" max="0.3" step="0.005" value="0.02">
+          <span id="vadThresholdVal" class="vad-val">0.020</span>
+        </div>
+        <div id="vadMeterTrack" class="vad-meter-track">
+          <div id="vadMeterFill" class="vad-meter-fill"></div>
+        </div>
+        <div class="auto-note">
+          Speak, then pause ~700ms to auto-send. The reply auto-plays, then it
+          listens again. Auto-disables after 5s of silence with no speech
+          detected (manual re-enable required — no auto-redial).
+          <strong>Headphones recommended</strong> — without them the console
+          can pick up its own speaker output as if it were you talking.
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h2>Raw message</h2>
+      <div class="field">
+        <textarea id="rawInput">{"type": "get_canned", "id": "raw-1", "category": "filler", "mode": "friendly"}</textarea>
+      </div>
+      <button id="sendRawBtn" class="panel-btn" disabled>Send raw JSON</button>
+    </div>
+  </aside>
+</main>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const hostInput = $("host");
+  const tokenInput = $("token");
+  const connectBtn = $("connectBtn");
+  const disconnectBtn = $("disconnectBtn");
+  const clearBtn = $("clearBtn");
+  const statusEl = $("status");
+  const statusText = $("statusText");
+  const logEl = $("log");
+  const recordBtn = $("recordBtn");
+  const recIndicator = $("recIndicator");
+  const recTimer = $("recTimer");
+  const personalitySelect = $("personalitySelect");
+  const autoModeBtn = $("autoModeBtn");
+  const autoStateEl = $("autoState");
+  const vadThresholdInput = $("vadThreshold");
+  const vadThresholdVal = $("vadThresholdVal");
+  const vadMeterTrack = $("vadMeterTrack");
+  const vadMeterFill = $("vadMeterFill");
+  const actionButtons = [$("sendCannedBtn"), $("sendSpeechBtn"), $("sendRawBtn"), recordBtn, autoModeBtn];
+
+  hostInput.value = localStorage.getItem("deskmates.host") || location.host;
+  tokenInput.value = localStorage.getItem("deskmates.token") || "";
+
+  let ws = null;
+  let msgCounter = 0;
+  const nextId = (prefix) => `${prefix}-${Date.now().toString(36)}-${(++msgCounter)}`;
+
+  // FIFO of { type, id } — one entry per canned_result/speech_result header
+  // received, shifted off when its binary frame arrives right after. The
+  // server always sends header-then-binary as a pair per request, so this
+  // stays correct even with two request/response cycles interleaved (auto
+  // mode's filler + real reply, in flight on the same socket at once) —
+  // replaces the old "only one request is ever in flight" assumption.
+  const pendingResponses = [];
+
+  function trackResponseHeader(raw) {
+    let msg;
+    try {
+      msg = JSON.parse(raw);
+    } catch {
+      return;
+    }
+    if (msg.type === "speech_result" || msg.type === "text_result") logTurnStats(msg.turn_stats);
+    if (msg.type === "canned_result" || msg.type === "speech_result") {
+      pendingResponses.push({ type: msg.type, id: msg.id, raw: !!msg.raw });
+    } else if (msg.type === "canned_error" && vadState === "playing") {
+      // Only the filler fetch can fail like this mid-turn (the real
+      // speech_request path has its own speech_error/canned fallback) — log
+      // and keep waiting for the real speech_result exactly as before, no
+      // retry.
+      logSys(`auto: filler fetch came back empty (${msg.reason}) — still waiting for the real reply`);
+    }
+  }
+
+  // Client-side mirror of the server's wrapPcmAsWav (server.js) — used only
+  // to make raw-PCM auto-mode frames replayable from the log's <audio>
+  // element after the fact. Actual auto-playback never goes through this.
+  function wrapPcmAsWavForDisplay(pcmBytes, sampleRate = 16000) {
+    const header = new ArrayBuffer(44);
+    const view = new DataView(header);
+    const writeStr = (offset, str) => {
+      for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+    };
+    writeStr(0, "RIFF");
+    view.setUint32(4, 36 + pcmBytes.length, true);
+    writeStr(8, "WAVE");
+    writeStr(12, "fmt ");
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true); // PCM
+    view.setUint16(22, 1, true); // mono
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * 2, true); // byte rate (16-bit mono)
+    view.setUint16(32, 2, true); // block align
+    view.setUint16(34, 16, true); // bit depth
+    writeStr(36, "data");
+    view.setUint32(40, pcmBytes.length, true);
+    return new Blob([header, pcmBytes], { type: "audio/wav" });
+  }
+
+  function setStatus(state, text) {
+    statusEl.className = "status " + state;
+    statusText.textContent = text;
+  }
+
+  function log(dir, cls, text, extraNode) {
+    const row = document.createElement("div");
+    row.className = "entry " + cls;
+    const t = document.createElement("span");
+    t.className = "t";
+    t.textContent = new Date().toLocaleTimeString();
+    const d = document.createElement("span");
+    d.className = "dir";
+    d.textContent = dir;
+    const body = document.createElement("span");
+    body.className = "msg";
+    body.textContent = text;
+    row.append(t, d, body);
+    if (extraNode) row.append(extraNode);
+    logEl.appendChild(row);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  function logSent(text) { log("→", "sent", text); }
+  function logRecv(text) { log("←", "recv", text); }
+  function logSys(text) { log("·", "sys", text); }
+  // Per-turn figures come from the server's turn_stats (real API usage,
+  // timings, TTS chars) — same rendering as src/turnStats.js formatTurnStats.
+  function logTurnStats(s) {
+    if (!s || typeof s !== "object") return logSys("turn stats: (none)");
+    const p = [];
+    if (typeof s.model === "string") p.push(s.model);
+    if (s.input_tokens != null || s.output_tokens != null) p.push(`${s.input_tokens ?? "?"} in / ${s.output_tokens ?? "?"} out`);
+    if (typeof s.cost_usd === "number") {
+      p.push(s.cost_usd === 0 && s.equivalent_cost_usd ? `subscription (~$${s.equivalent_cost_usd.toFixed(4)} API-equiv)` : `$${s.cost_usd.toFixed(4)}`);
+    }
+    if (typeof s.tts_chars === "number") p.push(`${s.tts_chars} tts chars`);
+    if (typeof s.ms_llm === "number") p.push(`llm ${s.ms_llm}ms`);
+    if (typeof s.ms_total === "number") p.push(`total ${s.ms_total}ms`);
+    logSys(`turn stats: ${p.join(" · ") || "(none)"}`);
+  }
+  function logErr(text) { log("!", "err", text); }
+
+  function setConnected(connected) {
+    connectBtn.disabled = connected;
+    disconnectBtn.disabled = !connected;
+    for (const b of actionButtons) b.disabled = !connected;
+    hostInput.disabled = connected;
+    tokenInput.disabled = connected;
+    if (!connected) {
+      personalitySelect.disabled = true;
+      personalitySelect.innerHTML = '<option value="">personality…</option>';
+    }
+  }
+
+  // Populated from list_personalities/personality_result replies — see the
+  // message handler below. This client always connects with client=console
+  // (see connect()), which is what makes the server accept these two
+  // message types in the first place.
+  let lastKnownActivePersonality = "";
+
+  function renderPersonalityOptions(personalities, active, coverage = {}) {
+    personalitySelect.innerHTML = "";
+    for (const name of personalities) {
+      const opt = document.createElement("option");
+      opt.value = name;
+      const cov = coverage[name];
+      opt.textContent = cov ? `${name} (${cov.categoriesCovered}/${cov.categoriesExpected} lines)` : name;
+      personalitySelect.appendChild(opt);
+    }
+    lastKnownActivePersonality = active;
+    personalitySelect.value = active;
+    personalitySelect.disabled = personalities.length === 0;
+  }
+
+  function handlePersonalityMessage(raw) {
+    let msg;
+    try {
+      msg = JSON.parse(raw);
+    } catch {
+      return;
+    }
+    if (msg.type === "personalities_result") {
+      renderPersonalityOptions(msg.personalities, msg.active, msg.coverage && typeof msg.coverage === "object" ? msg.coverage : {});
+    } else if (msg.type === "personality_result") {
+      logSys(`active personality is now "${msg.active_personality}"`);
+      lastKnownActivePersonality = msg.active_personality;
+      personalitySelect.value = msg.active_personality;
+      personalitySelect.disabled = false;
+    } else if (msg.type === "error" && String(msg.id || "").startsWith("setpers-")) {
+      // A set_personality we sent failed — snap the dropdown back to
+      // whatever was actually active rather than leaving it showing the
+      // rejected selection.
+      personalitySelect.value = lastKnownActivePersonality;
+      personalitySelect.disabled = false;
+    }
+  }
+
+  personalitySelect.addEventListener("change", () => {
+    personalitySelect.disabled = true;
+    sendText({ type: "set_personality", id: nextId("setpers"), name: personalitySelect.value });
+  });
+
+  function connect() {
+    const host = hostInput.value.trim();
+    const token = tokenInput.value;
+    if (!host) { logErr("host is required"); return; }
+    localStorage.setItem("deskmates.host", host);
+    localStorage.setItem("deskmates.token", token);
+
+    const proto = location.protocol === "https:" ? "wss:" : "ws:";
+    const url = `${proto}//${host}/?token=${encodeURIComponent(token)}&client=console`;
+    setStatus("connecting", "connecting…");
+    logSys(`connecting to ${proto}//${host}/ (token via query param)`);
+    pendingResponses.length = 0;
+
+    ws = new WebSocket(url);
+    ws.binaryType = "arraybuffer";
+
+    ws.addEventListener("open", () => {
+      setStatus("connected", "connected");
+      setConnected(true);
+      logSys("connection open");
+      sendText({ type: "list_personalities", id: nextId("personalities") });
+    });
+
+    ws.addEventListener("message", (ev) => {
+      if (typeof ev.data === "string") {
+        logRecv(ev.data);
+        handlePersonalityMessage(ev.data);
+        trackResponseHeader(ev.data);
+        return;
+      }
+
+      const pending = pendingResponses.shift();
+      const isRaw = !!pending?.raw; // auto-mode frames: no WAV header, decoded via playPCM()
+
+      const handleArrayBuffer = (arrayBuffer) => {
+        const bytes = arrayBuffer.byteLength;
+        const pcmBytes = new Uint8Array(arrayBuffer);
+
+        // Log entry: for a raw-PCM frame there's no container the <audio>
+        // element can sniff, so wrap a copy in a throwaway WAV header just
+        // for this manual-replay convenience — playback routing below still
+        // uses the raw bytes directly via playPCM(), not this element.
+        const displayBlob = isRaw ? wrapPcmAsWavForDisplay(pcmBytes) : new Blob([arrayBuffer]);
+        const url = URL.createObjectURL(displayBlob);
+        const audio = document.createElement("audio");
+        audio.controls = true;
+        audio.src = url;
+        log("←", "recv", `[binary frame, ${bytes} bytes${isRaw ? ", raw PCM" : ""}]`, audio);
+
+        if (!pending) {
+          logErr("received a binary frame with no pending response header — skipping auto-playback routing");
+        } else if (pending.type === "canned_result") {
+          handleFillerFrame(pcmBytes, isRaw);
+        } else if (pending.type === "speech_result") {
+          handleRealReplyFrame(pcmBytes, isRaw);
+        }
+      };
+
+      if (ev.data instanceof Blob) {
+        ev.data.arrayBuffer().then(handleArrayBuffer);
+      } else {
+        handleArrayBuffer(ev.data);
+      }
+    });
+
+    ws.addEventListener("close", (ev) => {
+      setStatus("", "disconnected");
+      setConnected(false);
+      logSys(`connection closed (code ${ev.code}${ev.reason ? ", " + ev.reason : ""})`);
+      ws = null;
+      if (mediaRecorder && mediaRecorder.state === "recording") stopRecording();
+      if (autoModeActive) stopAutoConversation();
+    });
+
+    ws.addEventListener("error", () => {
+      setStatus("error", "error");
+      logErr("WebSocket error (see browser console/network tab for detail — the server also closes with an HTTP status on auth/capacity rejection before the socket ever opens)");
+    });
+  }
+
+  function disconnect() {
+    if (ws) ws.close(1000, "manual disconnect");
+  }
+
+  function sendText(obj) {
+    if (!ws || ws.readyState !== WebSocket.OPEN) { logErr("not connected"); return; }
+    const text = JSON.stringify(obj);
+    ws.send(text);
+    logSent(text);
+  }
+
+  // Shared by both the file-upload and microphone-recording paths: JSON
+  // header first, then the raw binary frame, matching the server's
+  // handleSpeechRequestHeader/handleBinaryMessage pairing (server.js) exactly.
+  // `raw` (only ever passed true by auto conversation mode) tells the server
+  // to skip its console-only WAV-wrapping for this turn's reply, since auto
+  // mode decodes raw PCM directly via playPCM() and has no header to strip.
+  // The manual/single-shot panel (file upload, mic Record button) never
+  // passes this, so it keeps getting WAV frames for its <audio> element.
+  function sendSpeechRequest(arrayBuffer, sourceLabel, raw = false) {
+    if (!ws || ws.readyState !== WebSocket.OPEN) { logErr("not connected"); return; }
+    const id = nextId("speech");
+    const header = { type: "speech_request", id, mode: $("speechMode").value };
+    if (raw) header.raw = true;
+    sendText(header);
+    ws.send(arrayBuffer);
+    logSent(`[binary frame, ${arrayBuffer.byteLength} bytes${sourceLabel ? " from " + sourceLabel : ""}]`);
+  }
+
+  // Decodes whatever the browser recorded (webm/opus, typically) and
+  // resamples/downmixes it to exactly 16kHz mono 16-bit PCM, little-endian,
+  // with no container/header — matching the raw format the server expects
+  // from the bot itself (no parsing/transcoding happens server-side, so this
+  // has to be exact). The file-upload path does NOT do this conversion — it
+  // sends the file's bytes as-is — so this is intentionally self-contained
+  // rather than reusing anything from that path.
+  async function encodeToPcm16Mono16k(blob) {
+    const arrayBuf = await blob.arrayBuffer();
+    const decodeCtx = new (window.AudioContext || window.webkitAudioContext)();
+    let decoded;
+    try {
+      decoded = await decodeCtx.decodeAudioData(arrayBuf);
+    } finally {
+      decodeCtx.close();
+    }
+
+    const targetRate = 16000;
+    const targetLength = Math.max(1, Math.ceil(decoded.duration * targetRate));
+    const offlineCtx = new OfflineAudioContext(1, targetLength, targetRate);
+    const source = offlineCtx.createBufferSource();
+    source.buffer = decoded;
+    source.connect(offlineCtx.destination);
+    source.start(0);
+    const rendered = await offlineCtx.startRendering();
+
+    const floatData = rendered.getChannelData(0); // mono, 16kHz, samples in [-1, 1]
+    const pcm = new ArrayBuffer(floatData.length * 2);
+    const view = new DataView(pcm);
+    for (let i = 0; i < floatData.length; i++) {
+      const s = Math.max(-1, Math.min(1, floatData[i]));
+      view.setInt16(i * 2, s < 0 ? s * 0x8000 : s * 0x7fff, true); // little-endian
+    }
+    return pcm;
+  }
+
+  let mediaRecorder = null;
+  let recordedChunks = [];
+  let recordStream = null;
+  let recordTimerInterval = null;
+  let recordStartTime = 0;
+
+  function fmtElapsed(ms) {
+    const totalSec = Math.floor(ms / 1000);
+    const m = Math.floor(totalSec / 60);
+    const s = totalSec % 60;
+    return `${m}:${String(s).padStart(2, "0")}`;
+  }
+
+  function resetRecordUI() {
+    clearInterval(recordTimerInterval);
+    recordTimerInterval = null;
+    recIndicator.hidden = true;
+    recordBtn.textContent = "Record";
+    recordBtn.classList.remove("danger");
+    autoModeBtn.disabled = !ws || ws.readyState !== WebSocket.OPEN;
+  }
+
+  async function startRecording() {
+    if (!ws || ws.readyState !== WebSocket.OPEN) { logErr("not connected"); return; }
+    if (autoModeActive) { logErr("stop auto conversation mode first"); return; }
+    autoModeBtn.disabled = true;
+    try {
+      recordStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (e) {
+      logErr("microphone access denied or unavailable: " + e.message);
+      autoModeBtn.disabled = false;
+      return;
+    }
+
+    try {
+      mediaRecorder = new MediaRecorder(recordStream);
+    } catch (e) {
+      logErr("MediaRecorder unsupported in this browser: " + e.message);
+      recordStream.getTracks().forEach((t) => t.stop());
+      recordStream = null;
+      autoModeBtn.disabled = false;
+      return;
+    }
+
+    recordedChunks = [];
+    mediaRecorder.addEventListener("dataavailable", (e) => {
+      if (e.data.size > 0) recordedChunks.push(e.data);
+    });
+
+    mediaRecorder.addEventListener("stop", async () => {
+      recordStream?.getTracks().forEach((t) => t.stop());
+      recordStream = null;
+      resetRecordUI();
+
+      const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || "audio/webm" });
+      recordedChunks = [];
+      mediaRecorder = null;
+
+      if (blob.size === 0) {
+        logErr("recording was empty — nothing to send");
+        return;
+      }
+      if (!ws || ws.readyState !== WebSocket.OPEN) {
+        logErr("connection closed while recording — discarding, not sending");
+        return;
+      }
+
+      logSys(`recorded ${blob.size} bytes, resampling to 16kHz mono PCM16…`);
+      try {
+        const pcm = await encodeToPcm16Mono16k(blob);
+        sendSpeechRequest(pcm, "mic recording, 16kHz mono PCM16");
+      } catch (e) {
+        logErr("failed to process recording: " + e.message);
+      }
+    });
+
+    mediaRecorder.start();
+    recordStartTime = Date.now();
+    recIndicator.hidden = false;
+    recTimer.textContent = "0:00";
+    recordTimerInterval = setInterval(() => {
+      recTimer.textContent = fmtElapsed(Date.now() - recordStartTime);
+    }, 200);
+    recordBtn.textContent = "Stop & Send";
+    recordBtn.classList.add("danger");
+  }
+
+  function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state === "recording") {
+      mediaRecorder.stop(); // "stop" listener above does the resample + send
+    }
+  }
+
+  recordBtn.addEventListener("click", () => {
+    if (mediaRecorder && mediaRecorder.state === "recording") {
+      stopRecording();
+    } else {
+      startRecording();
+    }
+  });
+
+  // --- Auto conversation mode (client-side VAD loop) ---------------------
+  //
+  // Additive, hands-free alternative to the manual Record button above.
+  // Reuses the same getUserMedia + encodeToPcm16Mono16k() resample pipeline
+  // and the same sendSpeechRequest() wire path — the only new part is an
+  // AnalyserNode-driven amplitude check that decides *when* to start/stop
+  // recording instead of a click.
+  //
+  // States: "listening" (waiting for speech) -> "recording" (buffering,
+  // ends on ~700ms of trailing silence) -> "playing" (reply in flight and/or
+  // auto-playing; mic ignored for threshold purposes so the console doesn't
+  // hear its own speaker output) -> back to "listening". A 5s silence timer
+  // only runs during "listening" — once real recording starts, the 700ms
+  // trailing-silence rule is what ends the turn, not this timer.
+  const VAD_HANGUP_MS = 5000;
+  const VAD_END_OF_UTTERANCE_MS = 700;
+  const VAD_RESPONSE_SAFETY_MS = 20000; // covers a pipeline failure with no fallback audio at all
+  // Fast-mode round trips have measured 2-4s in testing — comfortably below
+  // this, so normal turns never touch the filler at all. Tunable guess, not
+  // a measured value. deep_thoughtful is known-slow up front from the mode
+  // itself, so it skips this timer and fetches filler immediately instead
+  // (see onUtteranceRecorderStop).
+  const VAD_SLOW_RESPONSE_MS = 3800;
+  // Real speech has a beat between a stalling phrase and the actual answer
+  // ("let me think about that" <pause> "here's what I've got") — only
+  // applies when the reply had to queue behind a still-playing filler; if
+  // the filler already finished, processing time already left a natural
+  // gap, and the fast-path skip case never had a filler to pause after.
+  const VAD_QUEUED_REPLY_PAUSE_MS = 500;
+
+  let autoModeActive = false;
+  let vadState = "off"; // "listening" | "recording" | "playing" | "off"
+  let vadStream = null;
+  let vadAudioCtx = null;
+  let vadAnalyser = null;
+  let vadDataArray = null;
+  let vadRafId = null;
+  let vadRecorder = null;
+  let vadRecordedChunks = [];
+  let vadThreshold = Number(vadThresholdInput.value);
+  let hangupTimer = null;
+  let silenceTimer = null;
+  let responseSafetyTimer = null;
+  let slowResponseTimer = null;
+  let fillerPlayback = null; // { source, ended } for the currently-playing filler this turn, or null
+  let realReplyStarted = false; // true once the real reply has started playing this turn
+
+  // Persistent AudioContext dedicated to auto-mode playback (separate from
+  // vadAudioCtx, which is mic-analysis-only and gets torn down every
+  // stop/start cycle). Safari's autoplay policy requires an AudioContext be
+  // created/resumed synchronously inside a user-gesture call stack — the
+  // "Start auto conversation" click is that gesture, and every later
+  // playback triggered from an async WebSocket message handler reuses this
+  // same context instead of trying (and failing) to create its own. See
+  // ensurePlaybackAudioContext(), called first thing in startAutoConversation().
+  let playbackAudioCtx = null;
+
+  function ensurePlaybackAudioContext() {
+    if (!playbackAudioCtx || playbackAudioCtx.state === "closed") {
+      playbackAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    // Safari can suspend an AudioContext after a period of inactivity even
+    // mid-session, not just before first use — resume() is cheap/idempotent
+    // on an already-running context, so call it unconditionally here and
+    // again right before every playPCM().
+    playbackAudioCtx.resume();
+    return playbackAudioCtx;
+  }
+
+  // Decodes raw PCM16LE bytes (no container/header — see prepareOutgoingAudio
+  // in server.js, which skips WAV-wrapping for auto mode's `raw: true`
+  // requests) straight into an AudioBuffer and plays it through the
+  // persistent playbackAudioCtx. Returns a handle with the source node
+  // (so callers can .stop() it early) and an `ended` promise.
+  async function playPCM(pcmBytes, sampleRate = 16000) {
+    const ctx = ensurePlaybackAudioContext();
+    await ctx.resume(); // defensive — see ensurePlaybackAudioContext()
+
+    const frameCount = Math.max(1, Math.floor(pcmBytes.length / 2));
+    const audioBuffer = ctx.createBuffer(1, frameCount, sampleRate);
+    const channel = audioBuffer.getChannelData(0);
+    const view = new DataView(pcmBytes.buffer, pcmBytes.byteOffset, pcmBytes.byteLength);
+    for (let i = 0; i < frameCount; i++) {
+      channel[i] = view.getInt16(i * 2, true) / 32768;
+    }
+
+    const source = ctx.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(ctx.destination);
+    const ended = new Promise((resolve) => { source.onended = resolve; });
+    source.start();
+    return { source, ended };
+  }
+
+  function stopPlayback(handle) {
+    if (!handle) return;
+    try { handle.source.stop(); } catch { /* already stopped/ended — fine */ }
+  }
+
+  vadMeterTrack.style.setProperty("--threshold-pct", `${Math.min(100, (vadThreshold / 0.3) * 100)}%`);
+  vadThresholdInput.addEventListener("input", () => {
+    vadThreshold = Number(vadThresholdInput.value);
+    vadThresholdVal.textContent = vadThreshold.toFixed(3);
+    vadMeterTrack.style.setProperty("--threshold-pct", `${Math.min(100, (vadThreshold / 0.3) * 100)}%`);
+  });
+
+  function setAutoState(state) {
+    vadState = state;
+    if (state === "off") {
+      autoStateEl.hidden = true;
+      vadMeterTrack.classList.remove("gated");
+      return;
+    }
+    autoStateEl.hidden = false;
+    autoStateEl.className = "auto-state " + state;
+    autoStateEl.textContent =
+      state === "listening" ? "listening…" : state === "recording" ? "recording…" : "playing reply…";
+    vadMeterTrack.classList.toggle("gated", state === "playing");
+  }
+
+  function clearHangupTimer() {
+    if (hangupTimer) { clearTimeout(hangupTimer); hangupTimer = null; }
+  }
+  function armHangupTimer() {
+    clearHangupTimer();
+    hangupTimer = setTimeout(() => {
+      logSys("auto: no speech detected for 5s — hanging up (re-enable to start a new session)");
+      stopAutoConversation();
+    }, VAD_HANGUP_MS);
+  }
+  function clearSilenceTimer() {
+    if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null; }
+  }
+  function armSilenceTimer() {
+    clearSilenceTimer();
+    silenceTimer = setTimeout(() => finalizeUtterance(), VAD_END_OF_UTTERANCE_MS);
+  }
+  function clearResponseSafetyTimer() {
+    if (responseSafetyTimer) { clearTimeout(responseSafetyTimer); responseSafetyTimer = null; }
+  }
+  function armResponseSafetyTimer() {
+    clearResponseSafetyTimer();
+    responseSafetyTimer = setTimeout(() => {
+      logErr("auto: no reply audio arrived in time — resuming listening");
+      returnToListening();
+    }, VAD_RESPONSE_SAFETY_MS);
+  }
+
+  function clearSlowResponseTimer() {
+    if (slowResponseTimer) { clearTimeout(slowResponseTimer); slowResponseTimer = null; }
+  }
+  // Reactive filler: only fetched if the real reply is actually running
+  // slow, detected by elapsed wait time rather than any proxy for it. If
+  // speech_result lands before this fires, it's cancelled and no filler is
+  // ever requested for the turn.
+  function armSlowResponseTimer(mode) {
+    clearSlowResponseTimer();
+    slowResponseTimer = setTimeout(() => {
+      slowResponseTimer = null;
+      sendFillerRequest(mode);
+    }, VAD_SLOW_RESPONSE_MS);
+  }
+
+  function sendFillerRequest(mode) {
+    sendText({ type: "get_canned", id: nextId("autofiller"), category: "filler", mode, raw: true });
+  }
+
+  function updateMeter(rms, gated) {
+    const pct = Math.min(100, (rms / 0.3) * 100);
+    vadMeterFill.style.width = pct + "%";
+    vadMeterFill.style.background = gated ? "var(--muted)" : rms >= vadThreshold ? "var(--bad)" : "var(--ok)";
+  }
+
+  function vadTick() {
+    if (!autoModeActive) return;
+    vadAnalyser.getFloatTimeDomainData(vadDataArray);
+    let sum = 0;
+    for (let i = 0; i < vadDataArray.length; i++) sum += vadDataArray[i] * vadDataArray[i];
+    const rms = Math.sqrt(sum / vadDataArray.length);
+    const gated = vadState === "playing";
+    updateMeter(rms, gated);
+
+    if (!gated) {
+      if (vadState === "listening" && rms >= vadThreshold) {
+        beginUtteranceRecording();
+      } else if (vadState === "recording") {
+        if (rms >= vadThreshold) clearSilenceTimer();
+        else if (!silenceTimer) armSilenceTimer();
+      }
+    }
+
+    vadRafId = requestAnimationFrame(vadTick);
+  }
+
+  function beginUtteranceRecording() {
+    clearHangupTimer();
+    setAutoState("recording");
+    vadRecordedChunks = [];
+    try {
+      vadRecorder = new MediaRecorder(vadStream);
+    } catch (e) {
+      logErr("auto: MediaRecorder unsupported: " + e.message);
+      stopAutoConversation();
+      return;
+    }
+    vadRecorder.addEventListener("dataavailable", (e) => {
+      if (e.data.size > 0) vadRecordedChunks.push(e.data);
+    });
+    vadRecorder.addEventListener("stop", onUtteranceRecorderStop);
+    vadRecorder.start();
+    logSys("auto: speech detected, recording…");
+  }
+
+  function finalizeUtterance() {
+    clearSilenceTimer();
+    if (vadRecorder && vadRecorder.state === "recording") {
+      setAutoState("playing"); // gate the mic immediately — don't wait for the round trip
+      vadRecorder.stop(); // "stop" listener below does the resample + send
+    }
+  }
+
+  async function onUtteranceRecorderStop() {
+    const blob = new Blob(vadRecordedChunks, { type: vadRecorder.mimeType || "audio/webm" });
+    vadRecordedChunks = [];
+    vadRecorder = null;
+    if (!autoModeActive) return; // toggled off while this utterance was wrapping up
+
+    if (blob.size === 0) {
+      logErr("auto: empty utterance, skipping");
+      returnToListening();
+      return;
+    }
+    if (!ws || ws.readyState !== WebSocket.OPEN) {
+      logErr("auto: connection lost — stopping auto conversation mode");
+      stopAutoConversation();
+      return;
+    }
+
+    try {
+      const pcm = await encodeToPcm16Mono16k(blob);
+      fillerPlayback = null;
+      realReplyStarted = false;
+      const mode = $("speechMode").value;
+      sendSpeechRequest(pcm, "auto-VAD", true);
+
+      if (mode === "deep_thoughtful") {
+        // Known-slow up front from the mode itself — fetch immediately, no
+        // need to wait and see. (Not reachable from this console's mode
+        // dropdown today, but kept correct in case that changes.)
+        sendFillerRequest(mode);
+      } else {
+        // Reactive: most friendly/sentry_intruder turns land in 2-4s, well
+        // under VAD_SLOW_RESPONSE_MS — no filler fetched at all for those.
+        // Only a turn that's actually running slow triggers one, mid-wait.
+        armSlowResponseTimer(mode);
+      }
+
+      armResponseSafetyTimer(); // cleared once the *real* reply starts playing — filler failures don't touch this
+    } catch (e) {
+      logErr("auto: failed to process utterance: " + e.message);
+      returnToListening();
+    }
+  }
+
+  // Routed from the ws "message" handler via the pendingResponses queue
+  // (Task 1) — only acts while genuinely waiting on this turn's reply, and
+  // never after the real reply has already taken over. `isRaw` should always
+  // be true here (auto mode always requests raw:true — see sendFillerRequest)
+  // — the check just guards against a manual "Send get_canned" click that
+  // happens to land while auto mode is mid-turn, whose frame is WAV-wrapped
+  // and not decodable as raw PCM.
+  function handleFillerFrame(pcmBytes, isRaw) {
+    if (vadState !== "playing" || realReplyStarted) return;
+    if (!isRaw) {
+      logErr("auto: filler frame wasn't raw PCM (unexpected) — skipping auto-playback");
+      return;
+    }
+    playPCM(pcmBytes)
+      .then((handle) => {
+        fillerPlayback = handle;
+        handle.ended.then(() => {
+          if (fillerPlayback === handle) fillerPlayback = null;
+        });
+      })
+      .catch((e) => {
+        logErr("auto: filler playback failed: " + e.message);
+      });
+  }
+
+  // Never cut off audio that's actively playing. If the filler is mid-line
+  // when the real reply arrives, the reply waits for the filler's natural
+  // "ended" before playing — otherwise (filler already finished, its fetch
+  // failed, or it just hasn't started speaking yet) there's nothing to
+  // protect, so it plays right away. Speed is in service of the experience,
+  // not the other way around: cutting the bot off mid-word to start a
+  // different sentence is worse than the latency the filler exists to hide.
+  function handleRealReplyFrame(pcmBytes, isRaw) {
+    if (vadState !== "playing") return;
+    if (!isRaw) {
+      logErr("auto: reply frame wasn't raw PCM (unexpected) — skipping auto-playback");
+      returnToListening();
+      return;
+    }
+    realReplyStarted = true;
+    clearResponseSafetyTimer(); // the reply has arrived — only its playback might now wait on the filler, not the pipeline
+    clearSlowResponseTimer(); // reply beat the slow-turn threshold — no filler ever requested for this turn
+
+    if (fillerPlayback) {
+      const filler = fillerPlayback;
+      filler.ended.then(() => {
+        // vadState stays "playing" across this gap (untouched here), so
+        // the mic stays gated the whole time — a stray sound in the pause
+        // can't get picked up as the start of new user speech.
+        setTimeout(() => {
+          if (autoModeActive) playRealReply(pcmBytes); // don't play a stray reply after the user has since turned auto mode off
+        }, VAD_QUEUED_REPLY_PAUSE_MS);
+      });
+    } else {
+      playRealReply(pcmBytes);
+    }
+  }
+
+  // Plays the real reply and returns to listening once playback ends.
+  function playRealReply(pcmBytes) {
+    playPCM(pcmBytes)
+      .then((handle) => handle.ended.then(() => returnToListening()))
+      .catch((e) => {
+        logErr("auto: playback failed: " + e.message);
+        returnToListening();
+      });
+  }
+
+  function returnToListening() {
+    if (!autoModeActive) return;
+    clearResponseSafetyTimer();
+    setAutoState("listening");
+    armHangupTimer();
+  }
+
+  function startAutoConversation() {
+    if (!ws || ws.readyState !== WebSocket.OPEN) { logErr("not connected"); return; }
+    if (mediaRecorder && mediaRecorder.state === "recording") {
+      logErr("auto: stop the manual recording first");
+      return;
+    }
+
+    // Must happen synchronously, before the getUserMedia await below, so
+    // context creation/resume stays inside this click's gesture call stack —
+    // Safari refuses to resume an AudioContext from an async callback
+    // (e.g. the WebSocket message handler) unless it was already unlocked by
+    // a gesture. Reuses the existing context across stop/start cycles rather
+    // than creating a new one each time (see ensurePlaybackAudioContext()).
+    ensurePlaybackAudioContext();
+
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then((stream) => {
+        vadStream = stream;
+        vadAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const source = vadAudioCtx.createMediaStreamSource(vadStream);
+        vadAnalyser = vadAudioCtx.createAnalyser();
+        vadAnalyser.fftSize = 1024;
+        vadDataArray = new Float32Array(vadAnalyser.fftSize);
+        source.connect(vadAnalyser); // analysis only — never connected to destination
+
+        autoModeActive = true;
+        autoModeBtn.textContent = "Stop auto conversation";
+        autoModeBtn.classList.add("danger");
+        recordBtn.disabled = true;
+        logSys("auto conversation mode enabled — speak to begin (headphones recommended)");
+        setAutoState("listening");
+        armHangupTimer();
+        vadRafId = requestAnimationFrame(vadTick);
+      })
+      .catch((e) => {
+        logErr("microphone access denied or unavailable: " + e.message);
+      });
+  }
+
+  function stopAutoConversation() {
+    autoModeActive = false;
+    clearHangupTimer();
+    clearSilenceTimer();
+    clearResponseSafetyTimer();
+    clearSlowResponseTimer();
+    if (vadRafId) { cancelAnimationFrame(vadRafId); vadRafId = null; }
+    if (vadRecorder && vadRecorder.state === "recording") vadRecorder.stop();
+    vadRecorder = null;
+    if (fillerPlayback) { stopPlayback(fillerPlayback); fillerPlayback = null; }
+    realReplyStarted = false;
+    vadStream?.getTracks().forEach((t) => t.stop());
+    vadStream = null;
+    vadAudioCtx?.close();
+    vadAudioCtx = null;
+    vadAnalyser = null;
+    // playbackAudioCtx is intentionally left open (not closed) so re-enabling
+    // auto mode later can resume it instead of needing a fresh one — see
+    // ensurePlaybackAudioContext()'s reuse-if-still-open check.
+    setAutoState("off");
+    updateMeter(0, false);
+    autoModeBtn.textContent = "Start auto conversation";
+    autoModeBtn.classList.remove("danger");
+    recordBtn.disabled = !ws || ws.readyState !== WebSocket.OPEN;
+  }
+
+  autoModeBtn.addEventListener("click", () => {
+    if (autoModeActive) {
+      logSys("auto conversation mode disabled");
+      stopAutoConversation();
+    } else {
+      startAutoConversation();
+    }
+  });
+
+  connectBtn.addEventListener("click", connect);
+  disconnectBtn.addEventListener("click", disconnect);
+  clearBtn.addEventListener("click", () => { logEl.innerHTML = ""; });
+
+  $("sendCannedBtn").addEventListener("click", () => {
+    sendText({
+      type: "get_canned",
+      id: nextId("canned"),
+      category: $("cannedCategory").value.trim(),
+      mode: $("cannedMode").value,
+    });
+  });
+
+  $("sendSpeechBtn").addEventListener("click", async () => {
+    const file = $("speechFile").files[0];
+    if (!file) { logErr("choose an audio file first"); return; }
+    if (!ws || ws.readyState !== WebSocket.OPEN) { logErr("not connected"); return; }
+
+    // NOTE: sent as-is, no resample/PCM conversion — unlike the mic-record
+    // path below, this assumes the chosen file already matches the format
+    // the server expects (raw 16kHz mono 16-bit PCM). Pick your test file
+    // accordingly.
+    const buf = await file.arrayBuffer();
+    sendSpeechRequest(buf, `"${file.name}"`);
+  });
+
+  $("sendRawBtn").addEventListener("click", () => {
+    let obj;
+    try {
+      obj = JSON.parse($("rawInput").value);
+    } catch (e) {
+      logErr("raw input is not valid JSON: " + e.message);
+      return;
+    }
+    sendText(obj);
+  });
+})();
+</script>
+
+</body>
+</html>

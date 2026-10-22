@@ -1,0 +1,20 @@
+node_modules/
+.env
+*.log
+webapp/dist/
+
+# Per-turn analytics store (local runtime data, not source)
+logs/turns.db
+logs/turns.db-wal
+logs/turns.db-shm
+logs/turns.jsonl
+tasks/queue-order.json
+
+# Async task delegation worker state (src/delegatedTasks.js) — can contain
+# email content, chmod 700 at runtime; deliberately separate from the
+# git-tracked tasks/ build queue above.
+delegated-tasks/
+
+# Auto-saved insights can contain personal details from conversations: keep them off GitHub
+personalities/*/insights.json
+.claude/

@@ -1,0 +1,43 @@
+{
+  "name": "deskmates",
+  "version": "1.0.0",
+  "description": "Deskmates voice-AI backend: WebSocket server bridging a home robot to Anthropic (LLM) and ElevenLabs (STT/TTS).",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "generate-stock-phrases": "node scripts/generate-stock-phrases.js",
+    "generate-canned-lines": "node scripts/generate-canned-lines.js",
+    "test-client": "node scripts/test-client.js",
+    "prune-turns": "node scripts/prune-turns.js",
+    "prune-job-logs": "node scripts/prune-job-logs.js",
+    "approve-task": "node scripts/approve-task.js",
+    "reject-task": "node scripts/reject-task.js",
+    "run-ideation": "node scripts/run-ideation.js",
+    "run-build-task": "node scripts/run-build-task.js",
+    "run-cleanup": "node scripts/run-cleanup.js",
+    "run-reflection": "node scripts/run-reflection.js",
+    "approve-insight": "node scripts/approve-insight.js",
+    "reject-insight": "node scripts/reject-insight.js",
+    "reject-memory-fact": "node scripts/reject-memory-fact.js",
+    "google-oauth-setup": "node scripts/google-oauth-setup.js",
+    "check-personality": "node scripts/check-personality.js",
+    "turn-stats": "node scripts/turn-stats.js",
+    "test": "npm run test:green && npm run test:adversarial",
+    "test:green": "node --test \"tests/green/*.test.js\"",
+    "test:adversarial": "node --test \"tests/adversarial/*.test.js\"",
+    "gate": "node scripts/gate.js",
+    "install-hooks": "node scripts/install-hooks.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.3.276",
+    "@anthropic-ai/sdk": "^0.124.0",
+    "@elevenlabs/elevenlabs-js": "^2.67.0",
+    "dotenv": "^17.4.2",
+    "geoip-lite": "^1.4.10",
+    "undici": "^8.10.2",
+    "ws": "^8.21.3",
+    "zod": "^4.6.5"
+  }
+}

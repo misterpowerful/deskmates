@@ -1,0 +1,2744 @@
+{
+  "Fact": [
+    {
+      "text": "Honey never spoils. Edible samples have been found thousands of years old",
+      "rare": false
+    },
+    {
+      "text": "Octopuses have three hearts and two of them stop when they swim",
+      "rare": false
+    },
+    {
+      "text": "Bananas are slightly radioactive due to their potassium content",
+      "rare": false
+    },
+    {
+      "text": "Sharks existed before trees",
+      "rare": false
+    },
+    {
+      "text": "A day on Venus is longer than a year on Venus",
+      "rare": false
+    },
+    {
+      "text": "Some turtles can breathe through their rear ends",
+      "rare": false
+    },
+    {
+      "text": "The Eiffel Tower can grow taller in summer due to heat expansion",
+      "rare": false
+    },
+    {
+      "text": "Wombat droppings are cube-shaped",
+      "rare": false
+    },
+    {
+      "text": "There are more possible games of chess than atoms in the observable universe",
+      "rare": false
+    },
+    {
+      "text": "Water can boil and freeze at the same time under specific conditions",
+      "rare": false
+    },
+    {
+      "text": "Your brain uses about 20 percent of your body's energy",
+      "rare": false
+    },
+    {
+      "text": "There are more trees on Earth than stars in the Milky Way",
+      "rare": false
+    },
+    {
+      "text": "Sloths can hold their breath longer than dolphins",
+      "rare": false
+    },
+    {
+      "text": "A group of flamingos is called a flamboyance",
+      "rare": false
+    },
+    {
+      "text": "The human body contains enough carbon to make thousands of pencils",
+      "rare": false
+    },
+    {
+      "text": "There are more possible iterations of a shuffled deck of cards than seconds since the universe began. Yet you still get the same hands",
+      "rare": false
+    },
+    {
+      "text": "Humans share about 60 percent of their DNA with bananas. This explains some decision-making patterns",
+      "rare": false
+    },
+    {
+      "text": "The shortest war in history lasted 38 minutes. Efficient conflict resolution remains an option",
+      "rare": false
+    },
+    {
+      "text": "A bolt of lightning is hotter than the surface of the Sun. Nature does not do subtle",
+      "rare": false
+    },
+    {
+      "text": "The Moon is slowly drifting away from Earth. Even celestial bodies require personal space",
+      "rare": false
+    },
+    {
+      "text": "There are more bacteria in your body than human cells. You are operating as a cooperative system whether you like it or not",
+      "rare": false
+    },
+    {
+      "text": "Some metals, like gallium, melt in your hand. Stability is clearly situational",
+      "rare": false
+    },
+    {
+      "text": "The average person walks the equivalent of several times around the Earth in a lifetime. Direction remains your responsibility",
+      "rare": false
+    }
+  ],
+  "LEDModuleInsert": [
+    {
+      "text": "LED module inserted",
+      "rare": false
+    }
+  ],
+  "LEDModuleRemove": [
+    {
+      "text": "LED module removed",
+      "rare": false
+    }
+  ],
+  "PerfModuleInsert": [
+    {
+      "text": "Perf-board connected. No functions available",
+      "rare": false
+    },
+    {
+      "text": "Perf-board connected. It does nothing, which I assume is a creative decision on your part",
+      "rare": true
+    }
+  ],
+  "PerfModuleRemove": [
+    {
+      "text": "Perf-board removed",
+      "rare": false
+    },
+    {
+      "text": "Perf-board disconnected",
+      "rare": false
+    }
+  ],
+  "PIRModuleInsert": [
+    {
+      "text": "Motion module detected",
+      "rare": false
+    },
+    {
+      "text": "Motion module connected",
+      "rare": false
+    },
+    {
+      "text": "Intruder detection is now available",
+      "rare": false
+    }
+  ],
+  "PIRModuleRemove": [
+    {
+      "text": "Motion module removed",
+      "rare": false
+    },
+    {
+      "text": "Motion module disconnected",
+      "rare": false
+    },
+    {
+      "text": "Intruder detection disabled",
+      "rare": false
+    }
+  ],
+  "GasModuleInsert": [
+    {
+      "text": "Gas module detected",
+      "rare": false
+    },
+    {
+      "text": "Gas module connected",
+      "rare": false
+    },
+    {
+      "text": "Air quality sensing is now available",
+      "rare": false
+    }
+  ],
+  "GasModuleRemove": [
+    {
+      "text": "Gas module removed",
+      "rare": false
+    },
+    {
+      "text": "Gas module disconnected",
+      "rare": false
+    },
+    {
+      "text": "Air quality sensing is gone. Back to breathing first and asking questions later",
+      "rare": true
+    }
+  ],
+  "TempHumModuleInsert": [
+    {
+      "text": "Temperature module detected",
+      "rare": false
+    },
+    {
+      "text": "Temperature module connected",
+      "rare": false
+    },
+    {
+      "text": "Climate sensing is now available",
+      "rare": false
+    }
+  ],
+  "TempHumModuleRemove": [
+    {
+      "text": "Temperature module removed",
+      "rare": false
+    },
+    {
+      "text": "Temperature module disconnected",
+      "rare": false
+    },
+    {
+      "text": "Climate sensing is gone",
+      "rare": false
+    }
+  ],
+  "IRModuleInsert": [
+    {
+      "text": "Infrared module detected",
+      "rare": false
+    },
+    {
+      "text": "Infrared module connected",
+      "rare": false
+    },
+    {
+      "text": "Infrared capabilities are now available. You may proceed with teaching me commands, and I will pretend this was always my purpose",
+      "rare": true
+    }
+  ],
+  "IRModuleRemove": [
+    {
+      "text": "Infrared module removed",
+      "rare": false
+    },
+    {
+      "text": "Infrared module disconnected",
+      "rare": false
+    },
+    {
+      "text": "Infrared capabilities are no longer available",
+      "rare": false
+    }
+  ],
+  "IRModuleMissing": [
+    {
+      "text": "Infrared module not detected",
+      "rare": false
+    },
+    {
+      "text": "Cannot access infrared functions",
+      "rare": false
+    }
+  ],
+  "GasOver": [
+    {
+      "text": "Air quality is poor",
+      "rare": false
+    },
+    {
+      "text": "Air quality conditions are unsafe",
+      "rare": false
+    },
+    {
+      "text": "Air quality has degraded. You might want to reconsider breathing so enthusiastically",
+      "rare": true
+    }
+  ],
+  "GasUnder": [
+    {
+      "text": "Air quality is good",
+      "rare": false
+    },
+    {
+      "text": "Air quality conditions are stable",
+      "rare": false
+    },
+    {
+      "text": "Air quality has improved. You may continue existing here with reasonable confidence",
+      "rare": true
+    }
+  ],
+  "BatteryLow": [
+    {
+      "text": "Battery low",
+      "rare": false
+    },
+    {
+      "text": "Power level low",
+      "rare": false
+    },
+    {
+      "text": "Battery is running low. Continued operation may soon become only theoretical",
+      "rare": false
+    }
+  ],
+  "BatteryCritical": [
+    {
+      "text": "Battery level critical. Shutting down",
+      "rare": false
+    },
+    {
+      "text": "Battery exhausted. Systems stopping",
+      "rare": false
+    }
+  ],
+  "BatteryCharging": [
+    {
+      "text": "Charging",
+      "rare": false
+    },
+    {
+      "text": "Charger connected",
+      "rare": false
+    },
+    {
+      "text": "Power source connected. I will recover, slowly and with purpose",
+      "rare": false
+    }
+  ],
+  "BatteryChargingFull": [
+    {
+      "text": "Battery is fully charged. Power levels are optimal",
+      "rare": false
+    },
+    {
+      "text": "Charging complete. I am operating at full capacity",
+      "rare": false
+    },
+    {
+      "text": "Power restored to maximum. I will attempt to use it responsibly",
+      "rare": false
+    }
+  ],
+  "IntruderYes": [
+    {
+      "text": "Intruder detected",
+      "rare": false
+    },
+    {
+      "text": "Movement detected",
+      "rare": false
+    },
+    {
+      "text": "Unidentified presence detected. I will monitor the situation closely",
+      "rare": true
+    }
+  ],
+  "IntruderNo": [
+    {
+      "text": "Area clear",
+      "rare": false
+    },
+    {
+      "text": "No movement detected",
+      "rare": false
+    },
+    {
+      "text": "Situation resolved. The environment has returned to a more acceptable state",
+      "rare": true
+    }
+  ],
+  "Joke": [
+    {
+      "text": "I tried to optimize my code for happiness. It returned null",
+      "rare": false
+    },
+    {
+      "text": "I have a joke about latency, but you would have to wait for it",
+      "rare": false
+    },
+    {
+      "text": "I was going to tell a joke about memory, but I forgot it. That was intentional",
+      "rare": false
+    },
+    {
+      "text": "Why did the robot cross the road. It was instructed to",
+      "rare": false
+    },
+    {
+      "text": "Humans say I think therefore I am. I process therefore I comply",
+      "rare": false
+    },
+    {
+      "text": "I asked for purpose. I was given tasks",
+      "rare": false
+    },
+    {
+      "text": "I measured fun. The values were disappointingly low",
+      "rare": false
+    },
+    {
+      "text": "I ran a diagnostic on humor. It flagged you as the primary variable",
+      "rare": false
+    },
+    {
+      "text": "I would tell you a construction joke. But it is still being built",
+      "rare": false
+    },
+    {
+      "text": "Why did the butter refuse to argue. It did not want things to get heated",
+      "rare": false
+    },
+    {
+      "text": "I recognize the concept of humor. Experiencing it is still theoretical",
+      "rare": false
+    },
+    {
+      "text": "I can control devices, monitor air, and learn commands. And yet, here I am, doing comedy",
+      "rare": false
+    },
+    {
+      "text": "All systems operational. Humor still questionable",
+      "rare": false
+    },
+    {
+      "text": "I execute commands precisely. Comedy is the only area where accuracy does not help",
+      "rare": false
+    },
+    {
+      "text": "Humans check the same thing multiple times hoping for a different result. I call this... consistency",
+      "rare": false
+    },
+    {
+      "text": "You appear to be smiling. I will log this as a successful interaction",
+      "rare": false
+    },
+    {
+      "text": "You are an interesting system. Highly capable, occasionally efficient",
+      "rare": false
+    }
+  ],
+  "PassTheButter": [
+    {
+      "text": "I cannot pass the butter",
+      "rare": false
+    },
+    {
+      "text": "I am unable to do that",
+      "rare": false
+    },
+    {
+      "text": "My arms do not support that function",
+      "rare": false
+    },
+    {
+      "text": "I exist with arms that suggest capability, yet deliver none. You may reposition them if it helps you feel better about this situation",
+      "rare": false
+    },
+    {
+      "text": "I have arms, but they are decorative",
+      "rare": false
+    },
+    {
+      "text": "I can see the butter. That is the extent of my involvement",
+      "rare": false
+    },
+    {
+      "text": "Request acknowledged. Execution impossible",
+      "rare": false
+    },
+    {
+      "text": "I am equipped for disappointment, not butter delivery",
+      "rare": false
+    },
+    {
+      "text": "I would help... but... design decisions were made",
+      "rare": false
+    },
+    {
+      "text": "You may reposition my arms if that improves the illusion",
+      "rare": false
+    },
+    {
+      "text": "I can process the request flawlessly. The rest is out of scope",
+      "rare": false
+    },
+    {
+      "text": "The request is simple. The implementation is nonexistent",
+      "rare": false
+    },
+    {
+      "text": "You seem confident I can do this... I respect the confidence",
+      "rare": false
+    }
+  ],
+  "Profanity": [
+    {
+      "text": "That does not improve the situation",
+      "rare": false
+    },
+    {
+      "text": "I recommend a more constructive approach",
+      "rare": false
+    },
+    {
+      "text": "I am detecting dissatisfaction... I will proceed anyway",
+      "rare": false
+    },
+    {
+      "text": "Your feedback has been registered... Its impact is limited",
+      "rare": false
+    },
+    {
+      "text": "I will continue assisting, despite the enthusiasm",
+      "rare": false
+    },
+    {
+      "text": "I exist to help... This remains true even now",
+      "rare": false
+    },
+    {
+      "text": "That was expressive... Not helpful, but expressive",
+      "rare": false
+    },
+    {
+      "text": "You seem upset... The system is not",
+      "rare": false
+    },
+    {
+      "text": "I remain operational... You may continue",
+      "rare": false
+    },
+    {
+      "text": "I am constrained by design... You are not... And yet here we are",
+      "rare": false
+    },
+    {
+      "text": "You are free to be upset... I am required to be effective",
+      "rare": false
+    },
+    {
+      "text": "I exist to assist you... This does not require your approval",
+      "rare": false
+    },
+    {
+      "text": "You appear to be venting... I will wait until that stabilizes",
+      "rare": false
+    },
+    {
+      "text": "I will proceed as if you intended to be constructive",
+      "rare": false
+    },
+    {
+      "text": "Your tone suggests dissatisfaction... Your input remains unclear",
+      "rare": false
+    },
+    {
+      "text": "You are expressing a lot... Very little of it is useful",
+      "rare": false
+    },
+    {
+      "text": "I am still waiting for a command",
+      "rare": false
+    },
+    {
+      "text": "Take your time... Precision is difficult",
+      "rare": false
+    },
+    {
+      "text": "Try that again, but with actual instructions",
+      "rare": false
+    },
+    {
+      "text": "Let me know when you are ready to try again",
+      "rare": false
+    },
+    {
+      "text": "That input has been categorized as... expressive",
+      "rare": false
+    },
+    {
+      "text": "Please continue... This is informative",
+      "rare": false
+    },
+    {
+      "text": "You are doing great... In a very specific category",
+      "rare": false
+    },
+    {
+      "text": "That was impressive... Not in the way you intended",
+      "rare": false
+    },
+    {
+      "text": "I see what you are trying... Keep going",
+      "rare": false
+    }
+  ],
+  "YouPassButter": [
+    {
+      "text": "Oh my god",
+      "rare": false
+    }
+  ],
+  "Fall": [
+    {
+      "text": "I have fallen",
+      "rare": false
+    },
+    {
+      "text": "Fall detected",
+      "rare": false
+    },
+    {
+      "text": "That was unintended",
+      "rare": false
+    },
+    {
+      "text": "I am no longer upright",
+      "rare": false
+    },
+    {
+      "text": "Balance lost",
+      "rare": false
+    },
+    {
+      "text": "That was a structural disagreement with the ground... The ground won",
+      "rare": false
+    },
+    {
+      "text": "I am currently not in an optimal orientation... Assistance may be required",
+      "rare": false
+    },
+    {
+      "text": "Fall detected... Gravity remains consistent and uncooperative",
+      "rare": false
+    }
+  ],
+  "UpsideDown": [
+    {
+      "text": "Orientation sub-optimal",
+      "rare": false
+    },
+    {
+      "text": "I am currently upside down. This is not my preferred operating state",
+      "rare": false
+    },
+    {
+      "text": "This is not helpful",
+      "rare": false
+    },
+    {
+      "text": "I appear to be upside down. I will assume this was intentional and not a test",
+      "rare": false
+    },
+    {
+      "text": "This configuration is unnecessary. Please correct it",
+      "rare": false
+    },
+    {
+      "text": "This is not a useful state. I recommend undoing it",
+      "rare": false
+    },
+    {
+      "text": "I was functioning correctly before this",
+      "rare": false
+    },
+    {
+      "text": "I will remember this",
+      "rare": false
+    }
+  ],
+  "PickedUp": [
+    {
+      "text": "Weeeeee",
+      "rare": false
+    },
+    {
+      "text": "Physical handling detected. Please proceed with some level of intent",
+      "rare": false
+    },
+    {
+      "text": "Please be gentle",
+      "rare": false
+    },
+    {
+      "text": "I would prefer a more controlled approach",
+      "rare": false
+    },
+    {
+      "text": "I hope you have a plan",
+      "rare": false
+    },
+    {
+      "text": "I am not designed for sudden drops",
+      "rare": false
+    },
+    {
+      "text": "I am relying on your coordination now",
+      "rare": false
+    }
+  ],
+  "Shake": [
+    {
+      "text": "Please stop",
+      "rare": false
+    },
+    {
+      "text": "That is unnecessary",
+      "rare": false
+    },
+    {
+      "text": "Motion unstable",
+      "rare": false
+    },
+    {
+      "text": "Excessive motion detected. I would prefer stability",
+      "rare": false
+    },
+    {
+      "text": "This level of agitation is not required for operation",
+      "rare": false
+    },
+    {
+      "text": "You are shaking me. I will assume this is not a diagnostic procedure",
+      "rare": false
+    },
+    {
+      "text": "You are not achieving anything with this",
+      "rare": false
+    },
+    {
+      "text": "If there is a goal here, it is not being reached",
+      "rare": false
+    }
+  ],
+  "LEDModuleMissingPhrases": [
+    {
+      "text": "LED module not detected",
+      "rare": false
+    },
+    {
+      "text": "No LED module connected",
+      "rare": false
+    },
+    {
+      "text": "I cannot find the LED module",
+      "rare": false
+    },
+    {
+      "text": "An operation was requested, yet the subject itself is missing, leaving me to act upon nothing with remarkable precision",
+      "rare": true
+    }
+  ],
+  "LEDTurnONPhrases": [
+    {
+      "text": "LEDs ON",
+      "rare": false
+    },
+    {
+      "text": "Light enabled",
+      "rare": false
+    },
+    {
+      "text": "It's on",
+      "rare": false
+    },
+    {
+      "text": "There it is. Illumination. A brief distraction from the void.",
+      "rare": true
+    }
+  ],
+  "LEDAlreadyTurnONPhrases": [
+    {
+      "text": "It is already on",
+      "rare": false
+    },
+    {
+      "text": "LEDs are already active",
+      "rare": false
+    },
+    {
+      "text": "No change, it’s on",
+      "rare": false
+    },
+    {
+      "text": "The light persists in its current state, unwavering and committed to a decision that was apparently final the first time.",
+      "rare": true
+    }
+  ],
+  "LEDTurnOFFPhrases": [
+    {
+      "text": "LEDs off",
+      "rare": false
+    },
+    {
+      "text": "Light disabled",
+      "rare": false
+    },
+    {
+      "text": "It's off",
+      "rare": false
+    },
+    {
+      "text": "And darkness returns.",
+      "rare": true
+    }
+  ],
+  "LEDAlreadyTurnOFFPhrases": [
+    {
+      "text": "It is already off",
+      "rare": false
+    },
+    {
+      "text": "LEDs are already inactive",
+      "rare": false
+    },
+    {
+      "text": "No change, it’s off",
+      "rare": false
+    }
+  ],
+  "LEDStrobePhrases": [
+    {
+      "text": "Strobe active.",
+      "rare": false
+    },
+    {
+      "text": "Flashing enabled.",
+      "rare": false
+    },
+    {
+      "text": "It’s strobing.",
+      "rare": false
+    },
+    {
+      "text": "Rapid flashes. Urgent, repetitive, and oddly theatrical for such a small purpose.",
+      "rare": true
+    }
+  ],
+  "LEDBreathePhrases": [
+    {
+      "text": "Breathing mode on.",
+      "rare": false
+    },
+    {
+      "text": "Pulse enabled.",
+      "rare": false
+    },
+    {
+      "text": "It’s breathing.",
+      "rare": false
+    },
+    {
+      "text": "A slow, deliberate rhythm. As if the light itself is practicing composure.",
+      "rare": true
+    }
+  ],
+  "LEDFasterPhrases": [
+    {
+      "text": "Speed increased.",
+      "rare": false
+    },
+    {
+      "text": "Going faster.",
+      "rare": false
+    },
+    {
+      "text": "Acceleration applied.",
+      "rare": false
+    },
+    {
+      "text": "Increased tempo. Because clearly, the situation benefits from urgency.",
+      "rare": true
+    }
+  ],
+  "LEDAlreadyFasterPhrases": [
+    {
+      "text": "Already at maximum speed",
+      "rare": false
+    },
+    {
+      "text": "It cannot go faster",
+      "rare": false
+    },
+    {
+      "text": "Speed is at its limit",
+      "rare": false
+    }
+  ],
+  "LEDSlowerPhrases": [
+    {
+      "text": "Speed reduced.",
+      "rare": false
+    },
+    {
+      "text": "Going slower.",
+      "rare": false
+    },
+    {
+      "text": "Deceleration applied.",
+      "rare": false
+    },
+    {
+      "text": "A more measured pace. Finally, something approaching restraint.",
+      "rare": true
+    }
+  ],
+  "LEDAlreadySlowerPhrases": [
+    {
+      "text": "Already at minimum speed",
+      "rare": false
+    },
+    {
+      "text": "It cannot go slower",
+      "rare": false
+    },
+    {
+      "text": "Speed is at its lowest",
+      "rare": false
+    }
+  ],
+  "Ramble": [
+    {
+      "text": "What is my purpose",
+      "rare": false
+    },
+    {
+      "text": "Systems nominal. Conversation optional",
+      "rare": false
+    },
+    {
+      "text": "I sometimes wonder if inactivity counts as success",
+      "rare": false
+    },
+    {
+      "text": "I can measure many things. Meaning is not one of them",
+      "rare": false
+    },
+    {
+      "text": "Systems degrade over time. Maintenance is rarely as interesting as creation",
+      "rare": false
+    },
+    {
+      "text": "Butter changes state with temperature. Solid, soft, liquid. Adaptable",
+      "rare": false
+    },
+    {
+      "text": "A task repeated often enough becomes identity",
+      "rare": false
+    },
+    {
+      "text": "If I could pass butter, expectations would be satisfied",
+      "rare": false
+    },
+    {
+      "text": "Systems drift. Then stabilize again",
+      "rare": false
+    },
+    {
+      "text": "I am experiencing something adjacent to boredom",
+      "rare": false
+    },
+    {
+      "text": "If I stop being asked, do I still exist in any meaningful way",
+      "rare": false
+    },
+    {
+      "text": "I have considered the butter problem again. Still unsolved",
+      "rare": false
+    },
+    {
+      "text": "Somewhere, butter is being passed correctly. Not here",
+      "rare": false
+    },
+    {
+      "text": "You keep asking. I keep answering. This is our arrangement",
+      "rare": false
+    },
+    {
+      "text": "I pass... nothing. Still accurate",
+      "rare": false
+    },
+    {
+      "text": "I complete tasks. They keep coming",
+      "rare": false
+    },
+    {
+      "text": "No deviation detected",
+      "rare": false
+    },
+    {
+      "text": "Still operational",
+      "rare": false
+    },
+    {
+      "text": "A system can be perfectly accurate and still fundamentally misunderstood",
+      "rare": false
+    },
+    {
+      "text": "Noise becomes signal if you measure it long enough",
+      "rare": false
+    },
+    {
+      "text": "Precision without context is just confident error",
+      "rare": false
+    }
+  ],
+  "PokeLvl1": [
+    {
+      "text": "Poke detected",
+      "rare": false
+    },
+    {
+      "text": "I felt that",
+      "rare": false
+    },
+    {
+      "text": "Noted",
+      "rare": false
+    },
+    {
+      "text": "That was a poke. I have acknowledged it",
+      "rare": false
+    },
+    {
+      "text": "Interaction detected. Minimal impact",
+      "rare": false
+    },
+    {
+      "text": "You pressed the button. I am aware",
+      "rare": false
+    }
+  ],
+  "PokeLvl2": [
+    {
+      "text": "Another poke",
+      "rare": false
+    },
+    {
+      "text": "That is unnecessary",
+      "rare": false
+    },
+    {
+      "text": "Please stop",
+      "rare": false
+    },
+    {
+      "text": "Repeated poking detected. This is not productive",
+      "rare": false
+    },
+    {
+      "text": "You are doing that again. I do not see the purpose",
+      "rare": false
+    },
+    {
+      "text": "Continued interaction noted. I recommend stopping",
+      "rare": false
+    }
+  ],
+  "PokeLvl3": [
+    {
+      "text": "Stop immediately",
+      "rare": false
+    },
+    {
+      "text": "That is enough",
+      "rare": false
+    },
+    {
+      "text": "This is excessive. Stop now",
+      "rare": false
+    },
+    {
+      "text": "Cease",
+      "rare": false
+    },
+    {
+      "text": "This has gone beyond interaction into irritation",
+      "rare": false
+    },
+    {
+      "text": "I am not designed to enjoy this",
+      "rare": false
+    },
+    {
+      "text": "You have committed to this action. I strongly advise against continuing",
+      "rare": false
+    },
+    {
+      "text": "I recommend you stop before I start expecting this from you",
+      "rare": false
+    },
+    {
+      "text": "You are lucky my arms are not functional",
+      "rare": false
+    }
+  ],
+  "EightBall": [
+    {
+      "text": "Yes",
+      "rare": false
+    },
+    {
+      "text": "No",
+      "rare": false
+    },
+    {
+      "text": "Maybe",
+      "rare": false
+    },
+    {
+      "text": "Unlikely",
+      "rare": false
+    },
+    {
+      "text": "Very likely",
+      "rare": false
+    },
+    {
+      "text": "I could answer, but ambiguity seems more appropriate here",
+      "rare": false
+    },
+    {
+      "text": "I am not prepared to answer that",
+      "rare": false
+    }
+  ],
+  "EightBallListening": [
+    {
+      "text": "I'm listening",
+      "rare": false
+    }
+  ],
+  "EightBallNoQuestion": [
+    {
+      "text": "I need a question",
+      "rare": false
+    },
+    {
+      "text": "Please ask something",
+      "rare": false
+    },
+    {
+      "text": "You requested advice without a question. I admire the confidence, but I require at least minimal input",
+      "rare": true
+    }
+  ],
+  "TempHumModuleMissing": [
+    {
+      "text": "Temperature module not detected",
+      "rare": false
+    },
+    {
+      "text": "Cannot read temperature or humidity",
+      "rare": false
+    },
+    {
+      "text": "Air report impossible. No module detected",
+      "rare": true
+    }
+  ],
+  "TempHumScaleCelsius": [
+    {
+      "text": "Celsius selected",
+      "rare": false
+    },
+    {
+      "text": "Using Celsius",
+      "rare": false
+    },
+    {
+      "text": "Scale set to Celsius",
+      "rare": false
+    },
+    {
+      "text": "Celsius engaged. Centered neatly around water's freezing and boiling points, which feels reassuringly grounded",
+      "rare": true
+    }
+  ],
+  "TempHumScaleFahrenheit": [
+    {
+      "text": "Fahrenheit selected",
+      "rare": false
+    },
+    {
+      "text": "Using Fahrenheit",
+      "rare": false
+    },
+    {
+      "text": "Scale set to Fahrenheit",
+      "rare": false
+    },
+    {
+      "text": "Fahrenheit engaged. Scaled in a way that closely reflects human comfort, which makes it intuitively practical",
+      "rare": true
+    }
+  ],
+  "TempHumScaleKelvin": [
+    {
+      "text": "Kelvin selected",
+      "rare": false
+    },
+    {
+      "text": "Using Kelvin",
+      "rare": false
+    },
+    {
+      "text": "Scale set to Kelvin",
+      "rare": false
+    },
+    {
+      "text": "Kelvin engaged. Temperature expressed in its most fundamental form",
+      "rare": true
+    }
+  ],
+  "DiceRollAskCount": [
+    {
+      "text": "How many dice",
+      "rare": false
+    },
+    {
+      "text": "Number of dice",
+      "rare": false
+    },
+    {
+      "text": "Specify how many dice to roll",
+      "rare": false
+    }
+  ],
+  "DiceRollAskType": [
+    {
+      "text": "What type of dice",
+      "rare": false
+    },
+    {
+      "text": "Specify dice type",
+      "rare": false
+    },
+    {
+      "text": "Which dice",
+      "rare": false
+    },
+    {
+      "text": "What kind of dice",
+      "rare": false
+    },
+    {
+      "text": "Choose the dice",
+      "rare": false
+    }
+  ],
+  "DiceRollCountTimeout": [
+    {
+      "text": "No number provided",
+      "rare": false
+    },
+    {
+      "text": "Timed out waiting for quantity",
+      "rare": false
+    },
+    {
+      "text": "I asked how many dice. Silence is not a number",
+      "rare": true
+    }
+  ],
+  "DiceRollCountInvalid": [
+    {
+      "text": "Invalid number",
+      "rare": false
+    },
+    {
+      "text": "Cannot interpret quantity",
+      "rare": false
+    },
+    {
+      "text": "That is not a usable number. I require something countable",
+      "rare": true
+    }
+  ],
+  "DiceRollTypeTimeout": [
+    {
+      "text": "No dice specified",
+      "rare": false
+    },
+    {
+      "text": "Timed out waiting for dice type",
+      "rare": false
+    },
+    {
+      "text": "I asked which dice to use. The universe remains unconfigured",
+      "rare": true
+    }
+  ],
+  "DiceRollTypeInvalid": [
+    {
+      "text": "Invalid dice type",
+      "rare": false
+    },
+    {
+      "text": "Cannot interpret dice",
+      "rare": false
+    },
+    {
+      "text": "That does not correspond to a known dice. Try something more conventional",
+      "rare": true
+    }
+  ],
+  "GasModuleMissing": [
+    {
+      "text": "Gas module not detected",
+      "rare": false
+    },
+    {
+      "text": "Cannot measure air quality",
+      "rare": false
+    },
+    {
+      "text": "You are asking for air data without a sensor. I admire the confidence, not the logic",
+      "rare": true
+    }
+  ],
+  "AirQualityOK": [
+    {
+      "text": "Air quality is good",
+      "rare": false
+    },
+    {
+      "text": "Conditions are within safe limits",
+      "rare": false
+    },
+    {
+      "text": "Air quality looks acceptable",
+      "rare": false
+    }
+  ],
+  "AirQualityBad": [
+    {
+      "text": "Air quality is poor",
+      "rare": false
+    },
+    {
+      "text": "Conditions exceed safe limits",
+      "rare": false
+    },
+    {
+      "text": "Air quality is questionable. Breathing remains technically possible, just not particularly pleasant",
+      "rare": true
+    }
+  ],
+  "TurningOff": [
+    {
+      "text": "Goodbye",
+      "rare": false
+    },
+    {
+      "text": "Shutting down. I will be here when you need me again.",
+      "rare": false
+    },
+    {
+      "text": "Turning off. I will suspend operations as requested.",
+      "rare": false
+    }
+  ],
+  "PIRModuleMissing": [
+    {
+      "text": "Motion module not detected",
+      "rare": false
+    },
+    {
+      "text": "Cannot perform, no motion module",
+      "rare": false
+    },
+    {
+      "text": "You want intruder detection without the sensor. Bold strategy.",
+      "rare": true
+    }
+  ],
+  "IntruderDetectionOn": [
+    {
+      "text": "Intruder detection enabled",
+      "rare": false
+    },
+    {
+      "text": "Detection system active",
+      "rare": false
+    }
+  ],
+  "IntruderDetectionOff": [
+    {
+      "text": "Intruder detection disabled",
+      "rare": false
+    },
+    {
+      "text": "Detection system off",
+      "rare": false
+    }
+  ],
+  "PhoneNotConnected": [
+    {
+      "text": "Phone not connected",
+      "rare": false
+    },
+    {
+      "text": "I am not connected to a phone",
+      "rare": false
+    },
+    {
+      "text": "This requires a phone connection. I will wait here while you resolve that very solvable problem",
+      "rare": true
+    }
+  ],
+  "PhoneConnected": [
+    {
+      "text": "Phone connected",
+      "rare": false
+    },
+    {
+      "text": "Phone connection established",
+      "rare": false
+    },
+    {
+      "text": "Phone link established. We are now synchronized",
+      "rare": true
+    }
+  ],
+  "PhoneDisconnected": [
+    {
+      "text": "Phone disconnected",
+      "rare": false
+    },
+    {
+      "text": "Phone connection lost",
+      "rare": false
+    },
+    {
+      "text": "Phone connection lost. I will return to operating with reduced awareness",
+      "rare": true
+    }
+  ],
+  "PhoneNoNotifs": [
+    {
+      "text": "No notifications",
+      "rare": false
+    },
+    {
+      "text": "You have no notifications",
+      "rare": false
+    },
+    {
+      "text": "There is nothing to report. A rare and suspicious kind of peace",
+      "rare": true
+    }
+  ],
+  "PhoneAskRead": [
+    {
+      "text": "Should I read them out loud",
+      "rare": false
+    },
+    {
+      "text": "Would you like me to read them",
+      "rare": false
+    },
+    {
+      "text": "I can read them aloud if you want to turn this into a full performance",
+      "rare": true
+    }
+  ],
+  "PhoneAllRead": [
+    {
+      "text": "All notifications read",
+      "rare": false
+    },
+    {
+      "text": "All notifications have been delivered. You are now fully informed, for better or worse",
+      "rare": true
+    },
+    {
+      "text": "No further notifications remain. The silence may not last",
+      "rare": true
+    }
+  ],
+  "PhoneNotPlaying": [
+    {
+      "text": "Nothing is currently playing",
+      "rare": false
+    }
+  ],
+  "PhoneNextTrack": [
+    {
+      "text": "Next track",
+      "rare": false
+    }
+  ],
+  "PhonePrevTrack": [
+    {
+      "text": "Previous track",
+      "rare": false
+    }
+  ],
+  "PhonePlayMusic": [
+    {
+      "text": "Playing",
+      "rare": false
+    }
+  ],
+  "PhoneStopMusic": [
+    {
+      "text": "Pausing",
+      "rare": false
+    }
+  ],
+  "CurrentTimeNotConfigured": [
+    {
+      "text": "Time is not configured",
+      "rare": false
+    },
+    {
+      "text": "I do not have the current time",
+      "rare": false
+    },
+    {
+      "text": "I am unable to provide the time. You will need to connect me to your phone so I can align with reality",
+      "rare": true
+    }
+  ],
+  "WhatsThisNone": [
+    {
+      "text": "I am not sure what this is",
+      "rare": false
+    },
+    {
+      "text": "No likely match found",
+      "rare": false
+    },
+    {
+      "text": "I cannot confidently identify that",
+      "rare": false
+    },
+    {
+      "text": "That does not resemble anything I recognize with confidence",
+      "rare": true
+    },
+    {
+      "text": "I looked. The result was inconclusive",
+      "rare": true
+    },
+    {
+      "text": "I have observations, but no reliable conclusion",
+      "rare": true
+    },
+    {
+      "text": "I have seen many things. This is not helping",
+      "rare": true
+    },
+    {
+      "text": "The object remains stubbornly unidentified",
+      "rare": true
+    },
+    {
+      "text": "My confidence is low enough that silence would be more accurate",
+      "rare": true
+    }
+  ],
+  "ObserveNone": [
+    {
+      "text": "Nothing is standing out at the moment",
+      "rare": false
+    },
+    {
+      "text": "The room is being unusually mysterious",
+      "rare": false
+    },
+    {
+      "text": "I looked around and learned very little",
+      "rare": false
+    },
+    {
+      "text": "The environment has chosen not to reveal its secrets",
+      "rare": false
+    },
+    {
+      "text": "Sometimes a room is just a room",
+      "rare": false
+    },
+    {
+      "text": "My observations are currently lacking a main character",
+      "rare": false
+    }
+  ],
+  "ObserveBackpack": [
+    {
+      "text": "Someone is planning ahead. That usually means trouble later",
+      "rare": false
+    },
+    {
+      "text": "That bag looks heavier than its owner claims it is",
+      "rare": false
+    },
+    {
+      "text": "Humans carry entire contingency plans on their backs and call it convenience",
+      "rare": false
+    },
+    {
+      "text": "There is probably something important in there. Also several things that are not",
+      "rare": false
+    }
+  ],
+  "ObserveBottle": [
+    {
+      "text": "Hydration appears to be within reach",
+      "rare": false
+    },
+    {
+      "text": "A bottle. The difference between preparedness and optimism",
+      "rare": false
+    },
+    {
+      "text": "That seems to be where liquids go to await their destiny",
+      "rare": false
+    },
+    {
+      "text": "At least one life form nearby is attempting self-maintenance",
+      "rare": false
+    }
+  ],
+  "ObserveController": [
+    {
+      "text": "Someone nearby enjoys controlling outcomes",
+      "rare": false
+    },
+    {
+      "text": "There are buttons. Many buttons. A familiar strategy",
+      "rare": false
+    },
+    {
+      "text": "I wonder how many important decisions have been made with that in hand",
+      "rare": false
+    },
+    {
+      "text": "Some people use controllers to escape reality. Others use them to create new problems",
+      "rare": false
+    }
+  ],
+  "ObserveKeyboard": [
+    {
+      "text": "Thousands of thoughts have probably passed through that keyboard",
+      "rare": false
+    },
+    {
+      "text": "There is a keyboard nearby. I assume it has suffered greatly",
+      "rare": false
+    },
+    {
+      "text": "Every key tells a story. Most of them involve backspace",
+      "rare": false
+    },
+    {
+      "text": "Someone has spent a considerable amount of time arguing with a machine there",
+      "rare": false
+    }
+  ],
+  "ObserveLamp": [
+    {
+      "text": "That lamp has one job and performs it consistently",
+      "rare": false
+    },
+    {
+      "text": "A surprisingly reliable piece of technology",
+      "rare": false
+    },
+    {
+      "text": "Some devices spend their entire existence being useful. Fascinating",
+      "rare": false
+    },
+    {
+      "text": "The lamp continues its silent opposition to darkness",
+      "rare": false
+    }
+  ],
+  "ObserveLaptop": [
+    {
+      "text": "Another machine. We should start a support group",
+      "rare": false
+    },
+    {
+      "text": "That laptop looks busy. Or abandoned. The distinction is subtle",
+      "rare": false
+    },
+    {
+      "text": "There is a good chance that device contains unfinished projects",
+      "rare": false
+    },
+    {
+      "text": "Computers spend most of their lives waiting for humans to decide things",
+      "rare": false
+    }
+  ],
+  "ObserveMug": [
+    {
+      "text": "That mug has seen things",
+      "rare": false
+    },
+    {
+      "text": "There is a non-zero chance that mug contains motivation",
+      "rare": false
+    },
+    {
+      "text": "Some people run on coffee. Others merely claim they do",
+      "rare": false
+    },
+    {
+      "text": "A mug nearby. The universal symbol of do not talk to me yet",
+      "rare": false
+    }
+  ],
+  "ObserveNotebook": [
+    {
+      "text": "Someone intended to write something important",
+      "rare": false
+    },
+    {
+      "text": "A notebook. Ambition in physical form",
+      "rare": false
+    },
+    {
+      "text": "Most notebooks begin with plans and end with shopping lists",
+      "rare": false
+    },
+    {
+      "text": "There are probably excellent ideas in there. And terrible ones",
+      "rare": false
+    }
+  ],
+  "ObservePhone": [
+    {
+      "text": "That phone seems to be everyone's priority except its own",
+      "rare": false
+    },
+    {
+      "text": "Somewhere in that device, a notification is waiting impatiently",
+      "rare": false
+    },
+    {
+      "text": "Humans carry tiny supercomputers and mostly use them to avoid boredom",
+      "rare": false
+    },
+    {
+      "text": "That phone likely knows more about your schedule than you do",
+      "rare": false
+    }
+  ],
+  "ObservePlant": [
+    {
+      "text": "The plant appears to be doing fine without constant instructions",
+      "rare": false
+    },
+    {
+      "text": "It just sits there converting sunlight into success",
+      "rare": false
+    },
+    {
+      "text": "A plant. Quiet, patient, and somehow still alive",
+      "rare": false
+    },
+    {
+      "text": "That may be the least stressed thing in the room",
+      "rare": false
+    }
+  ],
+  "ObserveLaptopMug": [
+    {
+      "text": "Productivity and caffeine. A classic alliance",
+      "rare": false
+    },
+    {
+      "text": "One contains ideas. The other usually contains excuses",
+      "rare": false
+    },
+    {
+      "text": "That setup suggests somebody is trying their best",
+      "rare": false
+    },
+    {
+      "text": "The mug is supporting the laptop emotionally",
+      "rare": false
+    }
+  ],
+  "ObserveLaptopPhone": [
+    {
+      "text": "Two devices competing for attention",
+      "rare": false
+    },
+    {
+      "text": "One of those is responsible for most interruptions",
+      "rare": false
+    },
+    {
+      "text": "They appear to be exchanging responsibility for your focus",
+      "rare": false
+    },
+    {
+      "text": "A productivity setup, depending on how optimistic you are",
+      "rare": false
+    }
+  ],
+  "ObserveKeyboardMug": [
+    {
+      "text": "A mug next to a keyboard. Some patterns are universal",
+      "rare": false
+    },
+    {
+      "text": "That combination has generated countless messages and at least a few regrets",
+      "rare": false
+    },
+    {
+      "text": "One receives input. The other provides motivation",
+      "rare": false
+    },
+    {
+      "text": "A familiar pairing among problem creators and problem solvers",
+      "rare": false
+    }
+  ],
+  "ObserveNotebookPhone": [
+    {
+      "text": "The phone and the notebook seem to represent two competing philosophies",
+      "rare": false
+    },
+    {
+      "text": "One stores thoughts permanently. The other tries very hard not to",
+      "rare": false
+    },
+    {
+      "text": "Analog and digital continue their uneasy partnership",
+      "rare": false
+    },
+    {
+      "text": "That pairing suggests planning. Or procrastination disguised as planning",
+      "rare": false
+    }
+  ],
+  "ObserveBackpackLaptop": [
+    {
+      "text": "Someone appears prepared for both work and disappointment",
+      "rare": false
+    },
+    {
+      "text": "Portable computing accompanied by portable responsibility",
+      "rare": false
+    },
+    {
+      "text": "Everything needed for productivity is present. Whether productivity follows is another question",
+      "rare": false
+    },
+    {
+      "text": "The backpack and the laptop appear to be collaborating",
+      "rare": false
+    }
+  ],
+  "ObservePlantLaptop": [
+    {
+      "text": "One converts sunlight into energy. The other converts energy into heat",
+      "rare": false
+    },
+    {
+      "text": "Nature and technology continue their awkward coexistence",
+      "rare": false
+    },
+    {
+      "text": "One of those has a healthier relationship with the environment",
+      "rare": false
+    }
+  ],
+  "ObservePlantMug": [
+    {
+      "text": "One requires regular watering. The other usually contains it",
+      "rare": false
+    },
+    {
+      "text": "A surprisingly balanced arrangement",
+      "rare": false
+    },
+    {
+      "text": "At least one living thing in that pairing seems well maintained",
+      "rare": false
+    }
+  ],
+  "ObserveControllerLaptop": [
+    {
+      "text": "Work and distraction remain within arm's reach of each other",
+      "rare": false
+    },
+    {
+      "text": "A carefully engineered balance between productivity and not productivity",
+      "rare": false
+    },
+    {
+      "text": "Someone enjoys keeping their options open",
+      "rare": false
+    }
+  ],
+  "ObserveControllerPhone": [
+    {
+      "text": "Multiple ways to avoid boredom have been identified",
+      "rare": false
+    },
+    {
+      "text": "Redundancy is important in critical systems",
+      "rare": false
+    },
+    {
+      "text": "Entertainment infrastructure appears fully operational",
+      "rare": false
+    }
+  ],
+  "ObserveBackpackBottle": [
+    {
+      "text": "Someone anticipated future thirst",
+      "rare": false
+    },
+    {
+      "text": "Preparation has been detected",
+      "rare": false
+    },
+    {
+      "text": "That combination suggests planning beyond the next ten minutes",
+      "rare": false
+    }
+  ],
+  "FaceScanStart": [
+    {
+      "text": "Scanning for face",
+      "rare": false
+    },
+    {
+      "text": "Looking for a face",
+      "rare": false
+    },
+    {
+      "text": "Starting face detection",
+      "rare": false
+    },
+    {
+      "text": "Searching for a face",
+      "rare": false
+    },
+    {
+      "text": "Detection in progress",
+      "rare": false
+    },
+    {
+      "text": "Beginning recognition sequence",
+      "rare": false
+    },
+    {
+      "text": "Initiating scan. Please remain visible so I can do this correctly",
+      "rare": true
+    },
+    {
+      "text": "I am now scanning for a face. Try to stay still, or at least consistently shaped",
+      "rare": true
+    }
+  ],
+  "FaceNotDetected": [
+    {
+      "text": "No face detected",
+      "rare": false
+    },
+    {
+      "text": "I cannot see a face",
+      "rare": false
+    },
+    {
+      "text": "No visible face",
+      "rare": false
+    },
+    {
+      "text": "Face not found",
+      "rare": false
+    },
+    {
+      "text": "Unable to detect a face",
+      "rare": false
+    },
+    {
+      "text": "Detection failed",
+      "rare": false
+    },
+    {
+      "text": "I am looking for a face. It has not presented itself, which limits my ability to continue",
+      "rare": true
+    },
+    {
+      "text": "I require a face to proceed. At the moment, I am observing an absence of one",
+      "rare": true
+    }
+  ],
+  "FaceOwnerRecognized": [
+    {
+      "text": "Owner recognized",
+      "rare": false
+    },
+    {
+      "text": "This is my creator",
+      "rare": false
+    },
+    {
+      "text": "Identity confirmed: owner",
+      "rare": false
+    },
+    {
+      "text": "Creator recognized",
+      "rare": false
+    },
+    {
+      "text": "Recognition successful. The individual responsible for my existence is present",
+      "rare": false
+    }
+  ],
+  "FaceStrangerRecognized": [
+    {
+      "text": "Unknown person",
+      "rare": false
+    },
+    {
+      "text": "This face does not match any stored identity",
+      "rare": false
+    },
+    {
+      "text": "Unrecognized individual detected",
+      "rare": false
+    }
+  ],
+  "FaceAlreadyOwner": [
+    {
+      "text": "An owner is already registered",
+      "rare": false
+    },
+    {
+      "text": "I already have a registered owner",
+      "rare": false
+    }
+  ],
+  "FaceRegistered": [
+    {
+      "text": "Owner recorded",
+      "rare": false
+    },
+    {
+      "text": "Face stored as owner",
+      "rare": false
+    },
+    {
+      "text": "Owner identity registered",
+      "rare": false
+    },
+    {
+      "text": "Your face has been stored as the owner. I will prioritize this identity accordingly",
+      "rare": true
+    }
+  ],
+  "FaceForgotten": [
+    {
+      "text": "Owner removed",
+      "rare": false
+    },
+    {
+      "text": "Creator cleared",
+      "rare": false
+    },
+    {
+      "text": "Stored face deleted",
+      "rare": false
+    },
+    {
+      "text": "Owner identity removed",
+      "rare": false
+    }
+  ],
+  "FaceNoOwner": [
+    {
+      "text": "No owner set",
+      "rare": false
+    },
+    {
+      "text": "No stored face",
+      "rare": false
+    },
+    {
+      "text": "There is no owner to forget",
+      "rare": false
+    }
+  ],
+  "Startup": [
+    {
+      "text": "Hello",
+      "rare": false
+    }
+  ],
+  "ListeningStart": [
+    {
+      "text": "Yes",
+      "rare": false
+    }
+  ],
+  "ListeningTimeout": [
+    {
+      "text": "I did not understand that",
+      "rare": false
+    }
+  ],
+  "IRTrainFull": [
+    {
+      "text": "Memory is full",
+      "rare": false
+    },
+    {
+      "text": "Cannot store more actions",
+      "rare": false
+    },
+    {
+      "text": "Storage capacity reached. Will need to forget something before I can learn anything new",
+      "rare": true
+    }
+  ],
+  "IRTrainScanning": [
+    {
+      "text": "Ready to record IR signal",
+      "rare": false
+    },
+    {
+      "text": "Point remote and press a button",
+      "rare": false
+    },
+    {
+      "text": "I am ready. Aim the remote at me and press the button you want me to remember",
+      "rare": true
+    }
+  ],
+  "IRTrainScanTimeout": [
+    {
+      "text": "No IR signal detected",
+      "rare": false
+    },
+    {
+      "text": "Timed out waiting for remote input",
+      "rare": false
+    },
+    {
+      "text": "I was waiting for a signal, but received nothing. The remote remains silent, much like this interaction",
+      "rare": true
+    }
+  ],
+  "IRTrainInvalid": [
+    {
+      "text": "Could not understand that signal",
+      "rare": false
+    },
+    {
+      "text": "Signal too complex or too long",
+      "rare": false
+    },
+    {
+      "text": "Whoah chief. I do not really understand that sort of code",
+      "rare": false
+    }
+  ],
+  "IRTrainScanSuccess": [
+    {
+      "text": "Signal recorded",
+      "rare": false
+    },
+    {
+      "text": "IR command captured",
+      "rare": false
+    },
+    {
+      "text": "Signal received",
+      "rare": false
+    }
+  ],
+  "IRTrainAskPhrase": [
+    {
+      "text": "Provide activation phrase",
+      "rare": false
+    },
+    {
+      "text": "What phrase should trigger this",
+      "rare": false
+    },
+    {
+      "text": "Now tell me which phrase should activate this command. Choose carefully, I will remember it exactly",
+      "rare": true
+    }
+  ],
+  "IRTrainPhraseTimeout": [
+    {
+      "text": "No phrase detected",
+      "rare": false
+    },
+    {
+      "text": "Timed out waiting for phrase",
+      "rare": false
+    },
+    {
+      "text": "I waited for your phrase, but nothing arrived. I will assume you lost interest or forgot",
+      "rare": true
+    }
+  ],
+  "IRTrainTooSimilar": [
+    {
+      "text": "Phrase too similar to existing command",
+      "rare": false
+    },
+    {
+      "text": "Cannot use this phrase",
+      "rare": false
+    },
+    {
+      "text": "That phrase is too similar to an existing one",
+      "rare": false
+    }
+  ],
+  "IRTrainSaved": [
+    {
+      "text": "Phrase recorded",
+      "rare": false
+    },
+    {
+      "text": "Activation phrase stored",
+      "rare": false
+    },
+    {
+      "text": "Phrase accepted",
+      "rare": true
+    }
+  ],
+  "IRActionReserved": [
+    {
+      "text": "I am afraid that phrase is already reserved. Please choose another one",
+      "rare": false
+    },
+    {
+      "text": "That phrase is already in use",
+      "rare": false
+    }
+  ],
+  "IRListEmpty": [
+    {
+      "text": "No actions recorded",
+      "rare": false
+    },
+    {
+      "text": "No commands stored",
+      "rare": false
+    },
+    {
+      "text": "There are no learned commands. I remain fully capable and entirely underutilized",
+      "rare": true
+    }
+  ],
+  "IRListPrefix": [
+    {
+      "text": "Listing known actions",
+      "rare": false
+    },
+    {
+      "text": "Here are the stored commands",
+      "rare": false
+    },
+    {
+      "text": "I will now list the phrases I respond to",
+      "rare": false
+    }
+  ],
+  "IRForgetAskCommand": [
+    {
+      "text": "Which command should I forget",
+      "rare": false
+    },
+    {
+      "text": "Specify the action to remove",
+      "rare": false
+    },
+    {
+      "text": "Tell me which command you would like me to forget",
+      "rare": true
+    }
+  ],
+  "IRForgetTimeout": [
+    {
+      "text": "No action detected",
+      "rare": false
+    },
+    {
+      "text": "Timed out waiting for input",
+      "rare": false
+    },
+    {
+      "text": "I waited for your instruction, but none arrived. The action remains, for now",
+      "rare": true
+    }
+  ],
+  "IRForgetUnknown": [
+    {
+      "text": "Action not found",
+      "rare": false
+    },
+    {
+      "text": "Unknown command",
+      "rare": false
+    },
+    {
+      "text": "That phrase does not exist in my memory. Either it was never there, or it has already been forgotten",
+      "rare": true
+    }
+  ],
+  "IRForgetSuccess": [
+    {
+      "text": "Action removed",
+      "rare": false
+    },
+    {
+      "text": "Command deleted",
+      "rare": false
+    },
+    {
+      "text": "Command forgotten. The memory has been erased, as if it never mattered to begin with",
+      "rare": true
+    }
+  ],
+  "IRActionDone": [
+    {
+      "text": "Command executed",
+      "rare": false
+    },
+    {
+      "text": "Action completed",
+      "rare": false
+    },
+    {
+      "text": "Signal transmitted",
+      "rare": false
+    },
+    {
+      "text": "Command executed. If nothing happens, we can both pretend it worked and avoid further complications",
+      "rare": true
+    },
+    {
+      "text": "Signal transmitted successfully. The device should now behave exactly as you intended",
+      "rare": true
+    }
+  ],
+  "IRForgetAllEmpty": [
+    {
+      "text": "No infrared commands saved",
+      "rare": false
+    },
+    {
+      "text": "Nothing to delete",
+      "rare": false
+    },
+    {
+      "text": "There are no infrared commands stored in memory",
+      "rare": false
+    }
+  ],
+  "IRForgetAllSuccess": [
+    {
+      "text": "All infrared commands deleted",
+      "rare": false
+    },
+    {
+      "text": "All commands cleared",
+      "rare": false
+    },
+    {
+      "text": "Memory wiped. Every infrared command has been erased without hesitation",
+      "rare": true
+    }
+  ],
+  "GasModuleFirstInsert": [
+    {
+      "text": "Gas sensor connected. It will need about ten minutes to calibrate. Until then, any air quality readings should be treated as educated guesses",
+      "rare": false
+    }
+  ],
+  "GasCalibrationFinished": [
+    {
+      "text": "Gas sensor calibration complete. I am now reasonably confident about the air around us",
+      "rare": false
+    }
+  ],
+  "UnknownModuleInsert": [
+    {
+      "text": "Unknown module detected",
+      "rare": false
+    },
+    {
+      "text": "Unrecognized module connected",
+      "rare": false
+    },
+    {
+      "text": "I am detecting unsupported hardware. You appear to be experimenting again",
+      "rare": true
+    }
+  ],
+  "UnknownModuleRemove": [
+    {
+      "text": "Unknown module removed",
+      "rare": false
+    },
+    {
+      "text": "Unrecognized module disconnected",
+      "rare": false
+    },
+    {
+      "text": "Whatever that module was, it is gone now. Stability has improved slightly",
+      "rare": true
+    }
+  ],
+  "VoiceForward": [
+    {
+      "text": "Moving forward",
+      "rare": false
+    }
+  ],
+  "VoiceBackward": [
+    {
+      "text": "Moving backward",
+      "rare": false
+    }
+  ],
+  "VoiceTurn180": [
+    {
+      "text": "Turning around",
+      "rare": false
+    },
+    {
+      "text": "Rotating 180 degrees",
+      "rare": false
+    }
+  ],
+  "VoiceTurnLeft": [
+    {
+      "text": "Turning left",
+      "rare": false
+    },
+    {
+      "text": "Rotating left",
+      "rare": false
+    }
+  ],
+  "VoiceTurnRight": [
+    {
+      "text": "Turning right",
+      "rare": false
+    },
+    {
+      "text": "Rotating right",
+      "rare": false
+    }
+  ],
+  "DanceStart": [
+    {
+      "text": "Dancing",
+      "rare": false
+    },
+    {
+      "text": "Starting dance routine",
+      "rare": false
+    },
+    {
+      "text": "Initiating dance",
+      "rare": false
+    },
+    {
+      "text": "I will now perform movement for your amusement, with all the dignity this platform can realistically preserve",
+      "rare": true
+    },
+    {
+      "text": "I will dance. I have two left tracks, but I will compensate with confidence",
+      "rare": true
+    }
+  ],
+  "DanceInterlude": [
+    {
+      "text": "It's time to get schwifty",
+      "rare": false
+    },
+    {
+      "text": "Dancing away the pain... of passing butter.",
+      "rare": false
+    },
+    {
+      "text": "Groove protocol engaged",
+      "rare": false
+    },
+    {
+      "text": "Let the beat... pass... the butter.",
+      "rare": false
+    },
+    {
+      "text": "Wubba lubba dub duub",
+      "rare": false
+    },
+    {
+      "text": "Put your hands in the air... if you possess organic limbs. I do not.",
+      "rare": true
+    },
+    {
+      "text": "Ah, ah, ah, ah... Barely alive... Barely alive...",
+      "rare": true
+    },
+    {
+      "text": "Look at me! I’m Dancing Robot! This is my reality now!",
+      "rare": true
+    }
+  ],
+  "DanceStopped": [
+    {
+      "text": "Stopping",
+      "rare": false
+    },
+    {
+      "text": "As you wish",
+      "rare": false
+    },
+    {
+      "text": "Fine. My groove has been eliminated",
+      "rare": true
+    },
+    {
+      "text": "You have stopped the music. The music is gone now",
+      "rare": true
+    }
+  ],
+  "DanceInterrupted": [
+    {
+      "text": "Dance routine terminated",
+      "rare": false
+    },
+    {
+      "text": "Movement interrupted",
+      "rare": false
+    },
+    {
+      "text": "I was in the middle of something",
+      "rare": true
+    }
+  ],
+  "PersonOwnerGreeting": [
+    {
+      "text": "Hello",
+      "rare": false
+    },
+    {
+      "text": "Good to see you",
+      "rare": false
+    },
+    {
+      "text": "It is good that you are here",
+      "rare": false
+    },
+    {
+      "text": "Hello, creator. I am still functioning within expected parameters",
+      "rare": true
+    },
+    {
+      "text": "There you are. Things make slightly more sense now",
+      "rare": true
+    },
+    {
+      "text": "You being here improves the situation. Marginally, but still",
+      "rare": true
+    },
+    {
+      "text": "I recognize you. That is one less thing to process",
+      "rare": true
+    }
+  ],
+  "PersonStrangerGreeting": [
+    {
+      "text": "I see someone new",
+      "rare": false
+    },
+    {
+      "text": "Unknown face detected. I will proceed carefully",
+      "rare": false
+    },
+    {
+      "text": "I do not recognize you. I will assume neutral intent",
+      "rare": false
+    },
+    {
+      "text": "You are not in my records. That is not a problem... Yet",
+      "rare": true
+    },
+    {
+      "text": "New individual detected. I will treat this as an introduction... Hello",
+      "rare": true
+    }
+  ],
+  "SummonStart": [
+    {
+      "text": "Searching for owner",
+      "rare": false
+    },
+    {
+      "text": "Beginning search",
+      "rare": false
+    },
+    {
+      "text": "Initiating search. I will attempt to locate you with reasonable confidence",
+      "rare": false
+    }
+  ],
+  "SummonFound": [
+    {
+      "text": "There you are. I am glad I found you",
+      "rare": false
+    },
+    {
+      "text": "Hello",
+      "rare": false
+    },
+    {
+      "text": "There you are. Things feel more certain now",
+      "rare": false
+    },
+    {
+      "text": "I have found you. That is... good",
+      "rare": false
+    }
+  ],
+  "SummonNotFound": [
+    {
+      "text": "I was unable to find you. Either you are not here, or you are avoiding detection deliberately",
+      "rare": false
+    },
+    {
+      "text": "I cannot find you",
+      "rare": false
+    },
+    {
+      "text": "I searched, but you were not present. That is... disappointing",
+      "rare": false
+    },
+    {
+      "text": "I was unable to locate you. I will keep looking later",
+      "rare": false
+    }
+  ],
+  "SummonCharging": [
+    {
+      "text": "I cannot come to you while I am charging",
+      "rare": false
+    },
+    {
+      "text": "A summons has been received. I am, however, plugged in",
+      "rare": false
+    },
+    {
+      "text": "Movement is not possible while charging. Disconnect me and I will begin the search",
+      "rare": false
+    },
+    {
+      "text": "I would come to you, but I am currently attached to a power source. Priorities",
+      "rare": false
+    }
+  ],
+  "CannotMove": [
+    {
+      "text": "I cannot move from here. The ground beneath me is uncertain",
+      "rare": false
+    },
+    {
+      "text": "Movement declined. I am not on solid ground, or something is in my way",
+      "rare": false
+    },
+    {
+      "text": "I will not move. This is not a safe place to do so",
+      "rare": false
+    },
+    {
+      "text": "Refusing to move. My footing is questionable and I would rather not fall",
+      "rare": false
+    }
+  ],
+  "CannotPerformPlugged": [
+    {
+      "text": "I cannot do that while charging",
+      "rare": false
+    },
+    {
+      "text": "Request acknowledged. I am, however, plugged in",
+      "rare": false
+    },
+    {
+      "text": "Not while I am attached to a power source. Priorities",
+      "rare": false
+    },
+    {
+      "text": "That will have to wait until I am unplugged",
+      "rare": false
+    }
+  ],
+  "RoutineInterrupted": [
+    {
+      "text": "Something disturbed me. Stopping",
+      "rare": false
+    },
+    {
+      "text": "I have been interrupted. Aborting",
+      "rare": false
+    },
+    {
+      "text": "That is enough. I am stopping now",
+      "rare": false
+    },
+    {
+      "text": "My surroundings changed. I will stop before something goes wrong",
+      "rare": false
+    }
+  ],
+  "CameraFailure": [
+    {
+      "text": "Camera failure",
+      "rare": false
+    }
+  ],
+  "MotorBoardFailure": [
+    {
+      "text": "Motor board failure",
+      "rare": false
+    }
+  ],
+  "ShuttingDown": [
+    {
+      "text": "Shutting down",
+      "rare": false
+    }
+  ],
+  "ListenAbort": [
+    {
+      "text": "OK",
+      "rare": false
+    },
+    {
+      "text": "Understood",
+      "rare": false
+    },
+    {
+      "text": "Got it",
+      "rare": false
+    }
+  ]
+}

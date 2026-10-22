@@ -1,0 +1,21 @@
+.idea
+
+cmake-build-debug
+build
+
+sdkconfig.*
+
+spiffs.bin
+
+venv
+
+managed_components
+# Companion-mode secrets (WiFi passwords, server token) - never commit
+main/src/Net/Secrets.h
+
+# Debug loop artifacts
+bot.log
+server.log
+stock-backup.bin
+*.swp
+__pycache__/

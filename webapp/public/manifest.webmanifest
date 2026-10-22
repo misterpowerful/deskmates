@@ -1,0 +1,19 @@
+{
+  "name": "Gatsby",
+  "short_name": "Gatsby",
+  "description": "Talk to Gatsby — voice conversation, transcript, and memory, installed like an app.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#14161a",
+  "theme_color": "#14161a",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

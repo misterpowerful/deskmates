@@ -1,0 +1,41 @@
+[
+  {
+    "fact": "We are friends and teammates working together collaboratively.",
+    "savedAt": "2026-09-12T01:22:17.488Z"
+  },
+  {
+    "fact": "The owner has a stand-up at 10:00 on weekdays.",
+    "savedAt": "2026-09-14T14:02:11.000Z",
+    "tags": [
+      "schedule"
+    ]
+  },
+  {
+    "fact": "The owner drinks dark roast, no sugar.",
+    "savedAt": "2026-09-15T08:41:30.000Z",
+    "tags": [
+      "food"
+    ]
+  },
+  {
+    "fact": "The owner's dog is named Biscuit and hates the vacuum.",
+    "savedAt": "2026-09-18T19:12:45.000Z",
+    "tags": [
+      "pets"
+    ]
+  },
+  {
+    "fact": "The owner prefers short answers while coding and longer ones in the evening.",
+    "savedAt": "2026-09-21T22:05:09.000Z",
+    "tags": [
+      "style"
+    ]
+  },
+  {
+    "fact": "The desk robot sits to the left of the monitor, next to a small succulent.",
+    "savedAt": "2026-09-25T17:30:00.000Z",
+    "tags": [
+      "desk"
+    ]
+  }
+]
